@@ -1,29 +1,45 @@
 import { useState } from "react";
+import "./login.css"
+import HostPopup from "./hostpopup";
+import JoinPopup from "./joinpopup";
+import RegisterPopup from "./registerpopup";
 
-function Login(){
-    const [hostUsername, setHostUsername] = useState(null);
-    const [hostPass, setHostPass] = useState(null);
-    const [playerUsername, setPlayerUserName] = useState(null);
-    const [roomCode, setRoomCode] = useState(null);
+function Login({newAcctCB, loginCB}){
+    const [showHost, setShowHost] = useState(null);
+    const [showJoin, setShowJoin] = useState(null);
+    const [showRegister, setShowRegister] = useState(null);
 
-    const handleHostUserChange = (e) =>{
-        const target = e.target;
-        setHostUsername(target.value);
-        console.log("host user is: " + hostUsername);
+    const toggleHost = () =>{
+        if(showHost)
+            setShowHost(false);
+        else
+            setShowHost(true);
     }
-    const handleHostPassChange = (e) =>{
-        const target = e.target;
-        setHostPass(target.value);
-        console.log("host pass is: " + hostPass);
+    const renderHost = () =>{
+        if(showHost)
+            return <HostPopup loginCallBack={loginCB} toggleClose={toggleHost}/>
     }
 
-    const handlePlayerUserChange = (e) =>{
-        const target = e.target;
-        setPlayerUserName(target.value);
+    const toggleJoin = () =>{
+        if(showJoin)
+            setShowJoin(false);
+        else
+            setShowJoin(true);
     }
-    const HandleRoomCodeChange = (e) =>{
-        const target = e.target;
-        setRoomCode(target.value);
+    const renderJoin = () =>{
+        if(showJoin)
+            return <JoinPopup toggleClose={toggleJoin}/>
+    }
+
+    const toggleRegister = () =>{
+        if(showRegister)
+            setShowRegister(false);
+        else
+            setShowRegister(true);
+    }
+    const renderRegister = () =>{
+        if(showJoin)
+            return <RegisterPopup registerCallBack={newAcctCB} toggleClose={toggleRegister}/>
     }
 
     return (<>
@@ -32,38 +48,17 @@ function Login(){
         <h2 className="login-subtitle">make your imagination reality</h2>
 
         <div className="login-host-container">
-            <input className="login-host-username"
-            type="text"
-            placeholder="Enter Username"
-            value={hostUsername}
-            onChange={handleHostUserChange}
-            ></input>
-
-            <input className="login-host-password"
-            type="password"
-            placeholder="Enter Password"
-            value={hostPass}
-            onChange={handleHostPassChange}
-            ></input>
-
-            <button className="login-host-submit">login</button>
+            {renderHost()}
+            <button className="login-popup-button" onClick={toggleHost}>Host</button>
         </div>
         <div className="login-join-container">
-            <input className="login-player-username"
-            type="text"
-            placeholder="Enter Username"
-            value={playerUsername}
-            onChange={handlePlayerUserChange}
-            ></input>
+            {renderJoin()}
+            <button className="login-popup-button" onClick={toggleJoin}>Join</button>
+        </div>
 
-            <input className="login-player-roomcode"
-            type="text"
-            placeholder="Enter Room Code"
-            value={roomCode}
-            onChange={HandleRoomCodeChange}
-            ></input>
-
-            <button className="login-host-submit">join</button>
+        <div className="login-new-container">
+            {renderRegister()}
+            <button className="login-popup-button" onClick={toggleRegister}>Register</button>
         </div>
     </div>
     </>)

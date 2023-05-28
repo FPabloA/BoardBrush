@@ -1,0 +1,38 @@
+.login-div{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: block;
+    text-align: center;
+}
+
+.login-title{
+    font-size: 7vw;
+}
+.login-subtitle{
+    font-size: 4vw;
+}
+
+.login-host-container{
+    margin: 1vh;
+}
+
+.login-join-container{
+    margin: 1vh;
+}
+
+.login-new-container{
+    margin: 1vh;
+}
+
+.login-popup-button{
+    display: block;
+    width: 12.5vw;
+    height: 3vh;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 1.5vh;
+}

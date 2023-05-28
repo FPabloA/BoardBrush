@@ -1,0 +1,66 @@
+.popup-bg-container{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.123);
+}
+
+.popup-content-box{
+    position: relative;
+    background-color: white;
+    display: inline-block;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    height: 30vh;
+    width: 50vw;
+}
+
+.popup-close-button{
+    position: absolute;
+    background-color: white;
+    border: none;
+    font-size: 2vw;
+    right: 5px;
+}
+
+.popup-close-button:hover{
+    cursor: pointer;
+}
+
+.popup-host-username{
+    display: block;
+    width: 25vw;
+    height: 3vh;
+    margin: 0 auto;
+    margin-bottom: 1.5vh;
+    border: 1px solid black;
+    font-size: 1.5vh;
+    text-align: center;
+}
+
+.popup-host-password{
+    display: block;
+    width: 25vw;
+    height: 3vh;
+    margin: 0 auto;
+    margin-bottom: 1.5vh;
+    border: 1px solid black;
+    font-size: 1.5vh;
+    text-align: center;
+}
+
+.popup-host-submit{
+    display: block;
+    width: 12.5vw;
+    height: 3vh;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 1.5vh;
+}
