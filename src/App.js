@@ -28,11 +28,11 @@ const auth = getAuth();
 const db = getFirestore(app);
 
 function App() {
-
+  const user = null;
   const newAcctCallback = (email, password) =>{
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      const user = userCredential.user;
+      user = userCredential.user;
       console.log("logged in");
     })
     .catch((error) => {
