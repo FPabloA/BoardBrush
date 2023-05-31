@@ -1,6 +1,7 @@
 import './App.css';
 import Login from './loginpage/login';
 import Load from './loadpage/load';
+import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate }
     from 'react-router-dom';
 // Import the functions you need from the SDKs you need
@@ -31,11 +32,12 @@ const db = getFirestore(app);
 
 function AppComponent() {
     const navigate = useNavigate();
-  
+    const [user, setUser] = useState(null);
+
     const newAcctCallback = (email, password) =>{
       createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        setUser(userCredential.user);
         navigate('/boardbrush/load');
       })
       .catch((error) => {
@@ -49,7 +51,7 @@ function AppComponent() {
     const loginCallback = (email, password) =>{
       signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        setUser(userCredential.user);
         navigate('/boardbrush/load');
       })
       .catch((error) => {
@@ -58,11 +60,25 @@ function AppComponent() {
         console.log(errorMsg);
       })
     }
+
+    const testLog = () =>{
+        if(user){
+            return(<>
+                <Load loggedUser={user}/>
+            </>)
+        }
+        else{
+            return(<>
+                <h1>Something went wrong</h1>
+            </>);
+        }
+        
+    }
   
     return (<>
     <Routes>
     <Route exact path='/boardbrush' element={<Login newAcctCB={newAcctCallback} loginCB={loginCallback}/>} />
-    <Route path='/boardbrush/load' element={<Load/>} />
+    <Route path='/boardbrush/load' element={testLog()} />
     </Routes>
     </>
     );
