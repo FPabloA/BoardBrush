@@ -10,7 +10,8 @@ import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
+import Editor from './editorpage/editor';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -61,10 +62,20 @@ function AppComponent() {
       })
     }
 
-    const testLog = () =>{
+    const signoutCallback = () =>{
+      signOut(auth).then(() => {
+        navigate('/boardbrush');
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMsg = error.message;
+        console.log(errorMsg);
+      });
+    }
+
+    const renderLogin = () =>{
         if(user){
             return(<>
-                <Load loggedUser={user}/>
+                <Load loggedUser={user} doEditor={loadEditor} signoutCB={signoutCallback}/>
             </>)
         }
         else{
@@ -72,13 +83,26 @@ function AppComponent() {
                 <h1>Something went wrong</h1>
             </>);
         }
-        
+    }
+
+    const loadEditor = (board) =>{
+      if(board){
+        return(<>
+          <Editor board={board}/>
+        </>)
+      }
+      else{
+        return(<>
+          <Editor board={null}/>
+        </>)
+      }
     }
   
     return (<>
     <Routes>
-    <Route exact path='/boardbrush' element={<Login newAcctCB={newAcctCallback} loginCB={loginCallback}/>} />
-    <Route path='/boardbrush/load' element={testLog()} />
+    <Route exact path='/boardbrush' element={<Login newAcctCB={newAcctCallback} loginCB={loginCallback} />} />
+    <Route path='/boardbrush/load' element={renderLogin()} />
+    <Route path='/boardbrush/edit' element={loadEditor()} />
     </Routes>
     </>
     );

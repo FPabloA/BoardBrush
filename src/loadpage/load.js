@@ -1,9 +1,20 @@
 import "./load.css";
+import { useNavigate } from 'react-router-dom';
 
-function Load({loggedUser}) {
+function Load({loggedUser, doEditor, signoutCB}) {
+    const navigate = useNavigate();
     const parseUser = () => {
         const ind = loggedUser.email.indexOf("@");
         return loggedUser.email.substring(0, ind);
+    }
+
+    const handleNewBoard = () =>{
+        doEditor(null);
+        navigate('/boardbrush/edit');
+    }
+
+    const handleLogout = () =>{
+        signoutCB();
     }
 
     return (
@@ -17,9 +28,8 @@ function Load({loggedUser}) {
             <div className="load-recent">
                 <div className="load-recent-header">
                     <span className="load-recent-text">Recent Boards</span>
-                    <button className="load-recent-button" >
-                        <span className="load-new-text">New Board</span> 
-                        
+                    <button className="load-recent-button" onClick={handleNewBoard}>
+                        <span className="load-new-text">New Board</span>    
                     </button>
                 </div>
             </div>
@@ -33,7 +43,7 @@ function Load({loggedUser}) {
                 </div>
             </div>
             <div className="load-footer">
-                <button className="load-exit-button" >
+                <button className="load-exit-button" onClick={handleLogout}>
                     <span className="load-exit-text">Exit</span>
                     
                 </button>

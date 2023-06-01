@@ -45,13 +45,13 @@ button{
 
 .load-header-text{
     margin-left: 15px;
-    font-size: 4.5vw;
+    font-size: 2.5vw;
 }
 
 .load-header-name{
     position: absolute;
     right: 15px;
-    font-size: 4.5vw;
+    font-size: 2.5vw;
 }
 
 .load-recent{
@@ -73,7 +73,7 @@ button{
 }
 
 .load-recent-text{
-    font-size: 4.5vw;
+    font-size: 2.5vw;
     margin-left: 10px;
 }
 
@@ -85,13 +85,13 @@ button{
     border-style: solid;
     border-color: black;
     border-radius: 15px;
-    height: 2.75vh;
+    height: 4vh;
     width: auto;
     right: 15px;
 }
 
 .load-new-text{
-    font-size: 2.5vw;
+    font-size: 1.25vw;
     margin-right: 5px;
 }
 
@@ -139,6 +139,6 @@ button{
 }
 
 .load-exit-text{
-    font-size: 4vw;
+    font-size: 1.5vw;
     margin-right: 5px;
 }
