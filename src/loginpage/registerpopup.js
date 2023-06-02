@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "./popup.css"
 function RegisterPopup({registerCallBack, toggleClose}){
-    const [newUsername, setNewUsername] = useState(null);
-    const [newPass1, setNewPass1] = useState(null);
-    const [newPass2, setNewPass2] = useState(null);
+    const [newUsername, setNewUsername] = useState("");
+    const [newPass1, setNewPass1] = useState("");
+    const [newPass2, setNewPass2] = useState("");
 
     const handleNewUserChange = (e) =>{
         const target = e.target;

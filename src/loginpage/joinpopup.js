@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./popup.css"
 function JoinPopup({toggleClose}){
-    const [playerUsername, setPlayerUserName] = useState(null);
-    const [roomCode, setRoomCode] = useState(null);
+    const [playerUsername, setPlayerUserName] = useState("");
+    const [roomCode, setRoomCode] = useState("");
 
     const handlePlayerUserChange = (e) =>{
         const target = e.target;

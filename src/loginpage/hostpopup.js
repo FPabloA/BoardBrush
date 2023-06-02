@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./popup.css"
 function HostPopup({loginCallBack, toggleClose}){
-    const [hostUsername, setHostUsername] = useState(null);
-    const [hostPass, setHostPass] = useState(null);
+    const [hostUsername, setHostUsername] = useState("");
+    const [hostPass, setHostPass] = useState("");
 
     const handleHostUserChange = (e) =>{
         const target = e.target;

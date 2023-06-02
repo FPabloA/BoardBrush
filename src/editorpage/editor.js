@@ -1,19 +1,39 @@
 import "./editor.css"
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
+import BoardSpace from './boardspace'
 
 function Editor({board}) {
     const navigate = useNavigate();
-    const [renderKey, setRenderKey] = useState(null);
+    const [boardGrid, setBoardGrid] = useState([]);
+    const [renderKey, setRenderKey] = useState(0);
 
     const renderBoard = () =>{
-        let spaces = [];
-        for(let i = 0; i < 8; i++){
-            for(let j = 0; j < 8; j++){
-                spaces.push(<div className="editor-board-space" key={renderKey}/>)
+        if(boardGrid.length === 0){
+            let spaces = [];
+            let keyVal = renderKey;
+            for(let i = 0; i < 8; i++){
+                for(let j = 0; j < 8; j++){
+                    spaces.push(<BoardSpace key={keyVal} doColorCB={colorSpaces}
+                    row={i} col={j} color={"white"}/>);
+                    keyVal++;
+                }
             }
+            setRenderKey(keyVal);
+            setBoardGrid([...spaces]);   
         }
-        return spaces
+        console.log(boardGrid);
+        return boardGrid;
+        
+    }
+
+    const colorSpaces = (row, col) =>{
+        //need to fix this hardcode
+        const index = (row * 8) + col;
+        console.log(boardGrid);
+        // let newBoard = [...boardGrid];
+        // newBoard[index] = <BoardSpace key={renderKey} doColorCB={colorSpaces}
+        //     row={row} col={col} color={"black"}/>;
     }
 
     const goToLoad = () =>{
