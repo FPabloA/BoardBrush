@@ -1,0 +1,27 @@
+.colorpck-container{
+    display: flexbox;
+    justify-content: center;
+    text-align: center;
+    position: absolute;
+    height: auto;
+    width: auto;
+    background-color: #181818;
+    bottom: 3vh;
+}
+
+.colorpck-header{
+    color: #f3f3f3;
+}
+
+.colorpck-add-button{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    background-color: #181818;
+    color: #f3f3f3;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.5vw;
+    margin: 1vh auto;
+}

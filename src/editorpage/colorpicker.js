@@ -1,0 +1,24 @@
+import { ColorPicker, useColor } from "react-color-palette";
+import "react-color-palette/lib/css/styles.css"
+import "./colorpicker.css"
+
+function ColorPopup({colorCB}){
+    const [color, setColor] = useColor("hex", "#121212");
+  
+    const handleAddColor = () =>{
+        colorCB(color.hex);
+    }
+
+    return (
+      <div className="colorpck-container">
+          <h1 className="colorpck-header">Choose a Color to Add!</h1>
+          <ColorPicker width={456} height={228} 
+                     color={color} 
+                     onChange={setColor} hideHSV dark />
+         <button className="colorpck-add-button" onClick={handleAddColor}
+         >Add</button>
+      </div>
+    )
+}
+
+export default ColorPopup;

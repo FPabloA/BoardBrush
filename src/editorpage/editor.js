@@ -2,9 +2,13 @@ import "./editor.css"
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import BoardSpace from './boardspace'
+import ColorPopup from "./colorpicker";
 
 function Editor({board}) {
     const navigate = useNavigate();
+
+    const [showColorPop, toggleColorPop] = useState(false);
+
     let renderKey = 0
     let immSpaces = [];
 
@@ -42,6 +46,15 @@ function Editor({board}) {
         navigate("/boardbrush/load");
     }
 
+    const renderColorPop = () =>{
+        if(showColorPop)
+            return <ColorPopup colorCB={getColor}/>
+    }
+    const getColor = (color) =>{
+        console.log(color);
+        toggleColorPop(!showColorPop)
+    }
+
     return(<>
         <>
         <div className="editor-container">
@@ -75,9 +88,10 @@ function Editor({board}) {
                 <div className="editor-board-frame">
                     {renderBoard()}
                 </div>
-                
+                {renderColorPop()}
                 <div className="editor-tab-content">
-                            
+                            <button className="editor-color-button" 
+                            onClick={() => toggleColorPop(!showColorPop)}>+</button>
                 </div>
             </div>
         </div>
