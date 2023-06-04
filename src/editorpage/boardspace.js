@@ -5,7 +5,8 @@ function BoardSpace({doColorCB, row, col, color}){
     }
 
     return(<>
-        <div className="editor-board-space" onClick={handleClick} />
+        <div className="editor-board-space" onClick={handleClick} 
+        style={{backgroundColor: color}}/>
     </>)
 }
 
