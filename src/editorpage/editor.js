@@ -1,34 +1,41 @@
 import "./editor.css"
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import BoardSpace from './boardspace'
 import ColorPopup from "./colorpicker";
 
-function Editor({board}) {
+export default function Editor({board}) {
     const navigate = useNavigate();
 
     const [showColorPop, toggleColorPop] = useState(false);
+    const [colorList, setColorList] = useState([]);
+    const [currColor, setCurrColor] = useState("#FFFFFF");
+    const colorRef = useRef();
+    colorRef.current = currColor;
 
-    let renderKey = 0
+    
+
     let immSpaces = [];
 
+    
+
     const colorSpaces = (row, col) =>{
+        console.log(colorRef.current);
         //need to fix this hardcode
         const index = (row * 8) + col;
         console.log("clicked " + row + ", " + col);
-        immSpaces[index] = <BoardSpace key={renderKey} doColorCB={colorSpaces}
-            row={row} col={col} color={"#000000"}/>;
+        immSpaces[index] = <BoardSpace key={index} doColorCB={colorSpaces}
+            row={row} col={col} color={colorRef.current}/>;
         setBoardGrid([...immSpaces]);
-        renderKey++
+        
     }
 
     const [boardGrid, setBoardGrid] = useState(() => {
         let spaces = [];
             for(let i = 0; i < 8; i++){
                 for(let j = 0; j < 8; j++){
-                    spaces.push(<BoardSpace key={renderKey} doColorCB={colorSpaces}
+                    spaces.push(<BoardSpace key={(i * 8) + j} doColorCB={colorSpaces}
                     row={i} col={j} color={"#FFFFFF"}/>);
-                    renderKey++;
                 }
             }
             immSpaces = spaces;
@@ -46,12 +53,27 @@ function Editor({board}) {
         navigate("/boardbrush/load");
     }
 
+    const renderColors = (color, ind) =>{
+        return <button className="editor-color-button"
+        style={{backgroundColor: color}} value={color} onClick={onColorClick} key={ind}></button>
+    }
+    const onColorClick = (e) =>{
+        console.log(e.target.value);
+        setCurrColor(e.target.value);
+    }
+
     const renderColorPop = () =>{
         if(showColorPop)
             return <ColorPopup colorCB={getColor}/>
     }
     const getColor = (color) =>{
-        console.log(color);
+        let temp = [...colorList];
+        if(colorList.length > 8){
+            console.log("called?")
+            temp.shift()
+        }
+        temp.push(color);
+        setColorList([...temp]);
         toggleColorPop(!showColorPop)
     }
 
@@ -90,6 +112,9 @@ function Editor({board}) {
                 </div>
                 {renderColorPop()}
                 <div className="editor-tab-content">
+                    {colorList.map((color, ind) => 
+                        renderColors(color, ind)
+                    )}
                             <button className="editor-color-button" 
                             onClick={() => toggleColorPop(!showColorPop)}>+</button>
                 </div>
@@ -99,5 +124,3 @@ function Editor({board}) {
         </>
     </>);
 }
-
-export default Editor;
