@@ -48,7 +48,7 @@ button{
 .editor-help-button{
     margin-top: 10px;
     height: 5vh;
-    width: 2.25vw;
+    width: 5vh;
     border-radius: 50%;
     background-color: white;
     box-sizing: border-box;
@@ -162,6 +162,42 @@ button{
     position: relative;
     border: solid 1px;
     overflow: hidden;
+}
+
+.editor-tabs{
+    vertical-align: center;
+    justify-content: center;
+    position: absolute;
+    bottom: -3px;
+    border: 1px;
+    box-sizing: border-box;
+    height: 54px;
+    width: fit-content;
+    box-sizing: border-box;
+}
+
+.editor-tab{
+    height: 100%;
+    width: 9vw;
+    border-style: solid;
+    border-color: black;
+    border-left: 0px;
+    background-color: white;
+    font-family: "Titillium Web", sans-serif;
+    font-size: 35px;
+}
+
+.editor-tab-active{
+    height: 100%;
+    width: 9vw;
+    border-style: solid;
+    border-color: black;
+    border-left: 0px;
+    border-bottom: 0px;
+    background-color: white;
+    font-family: "Titillium Web", sans-serif;
+    font-weight: bold;
+    font-size: 35px;
 }
 
 .editor-tab-content{

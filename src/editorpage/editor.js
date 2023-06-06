@@ -3,13 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from "react";
 import BoardSpace from './boardspace'
 import ColorPopup from "./colorpicker";
+import HelpPopup from "./helppopup";
 
 export default function Editor({board}) {
     const navigate = useNavigate();
-
-    const [showColorPop, toggleColorPop] = useState(false);
+    const tabList = ["Tiles", "Tokens", "Rules"];
+    const [activeTab, setActiveTab] = useState("Tiles");
+    const [showColorPop, setShowColorPop] = useState(false);
+    const [showHelpPop, setShowHelpPop] = useState(false);
     const [colorList, setColorList] = useState([]);
     const [currColor, setCurrColor] = useState("#FFFFFF");
+    const [numRows, setNumRows] = useState(8);
+    const [numCols, setNumCols] = useState(8);
+
     const colorRef = useRef();
     colorRef.current = currColor;
 
@@ -22,8 +28,7 @@ export default function Editor({board}) {
     const colorSpaces = (row, col) =>{
         console.log(colorRef.current);
         //need to fix this hardcode
-        const index = (row * 8) + col;
-        console.log("clicked " + row + ", " + col);
+        const index = (row * numCols) + col;
         immSpaces[index] = <BoardSpace key={index} doColorCB={colorSpaces}
             row={row} col={col} color={colorRef.current}/>;
         setBoardGrid([...immSpaces]);
@@ -32,9 +37,9 @@ export default function Editor({board}) {
 
     const [boardGrid, setBoardGrid] = useState(() => {
         let spaces = [];
-            for(let i = 0; i < 8; i++){
-                for(let j = 0; j < 8; j++){
-                    spaces.push(<BoardSpace key={(i * 8) + j} doColorCB={colorSpaces}
+            for(let i = 0; i < numRows; i++){
+                for(let j = 0; j < numCols; j++){
+                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
                     row={i} col={j} color={"#FFFFFF"}/>);
                 }
             }
@@ -42,17 +47,71 @@ export default function Editor({board}) {
             return spaces;
     });
 
-
+    //board frame functions
+    const doFrame = () =>{
+        const frameStyle = {gridTemplateColumns: "repeat("+numCols+", 1fr)"};
+        return(<>
+        <div className="editor-board-frame" style={frameStyle}>
+                    {renderBoard()}
+                    {makeTabs()}
+                </div>
+        </>)
+    }
     const renderBoard = () =>{
-        return boardGrid;
+        if(numRows * numCols === boardGrid.length){
+            return boardGrid;
+        }
+        else{
+            let spaces = [];
+            for(let i = 0; i < numRows; i++){
+                for(let j = 0; j < numCols; j++){
+                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
+                    row={i} col={j} color={"#FFFFFF"}/>);
+                }
+            }
+            immSpaces = spaces;
+            setBoardGrid([...immSpaces]);
+            return spaces;
+            
+        }
+        
+    }
+    const makeTabs = () =>{
+        return (<>
+            <div className="editor-tabs">
+                {tabList.map(tab =>(
+                    renderTabs(tab)
+                ))}
+            </div>
+        </>)
+    }
+    const renderTabs = (tab) =>{
+        if(activeTab === tab){
+            return <button className="editor-tab-active" id={tab}>{tab}</button>
+        }
+        else{
+            return <button className="editor-tab" id={tab} onClick={onTabClick}>{tab}</button>
+        }
+    }
+    const onTabClick = (e) =>{
+        setActiveTab(e.target.id);
     }
  
-    
-
     const goToLoad = () =>{
         navigate("/boardbrush/load");
     }
 
+    const renderTabContent = () =>{
+        if(activeTab === "Tiles"){
+            let list = colorList.map((color, ind) => 
+            renderColors(color, ind));
+            const addButton = <button className="editor-color-button" 
+            onClick={() => setShowColorPop(!showColorPop)}>+</button>;
+            return [...list, addButton];
+        }
+    }
+
+    //color button functions
     const renderColors = (color, ind) =>{
         return <button className="editor-color-button"
         style={{backgroundColor: color}} value={color} onClick={onColorClick} key={ind}></button>
@@ -62,6 +121,7 @@ export default function Editor({board}) {
         setCurrColor(e.target.value);
     }
 
+    //color picker functions
     const renderColorPop = () =>{
         if(showColorPop)
             return <ColorPopup colorCB={getColor}/>
@@ -74,7 +134,29 @@ export default function Editor({board}) {
         }
         temp.push(color);
         setColorList([...temp]);
-        toggleColorPop(!showColorPop)
+        setShowColorPop(!showColorPop)
+    }
+
+    //help button functions
+    const toggleHelpPop = () =>{
+        setShowHelpPop(!showHelpPop);
+    }
+    const renderHelpPop = () =>{
+        if(showHelpPop)
+            return <HelpPopup closeCB={toggleHelpPop}/>;
+    }
+
+    const handleRowChange = (e) =>{
+        if(!isNaN(e.target.value)){
+            setNumRows(e.target.value);
+        }
+        return;
+    }
+    const handleColChange = (e) =>{
+        if(!isNaN(e.target.value)){
+            setNumCols(e.target.value);
+        }
+        return;
     }
 
     return(<>
@@ -87,7 +169,7 @@ export default function Editor({board}) {
                 onClick={goToLoad}
                 >load?</button>
                 
-                <button className="editor-help-button">help</button>
+                <button className="editor-help-button" onClick={toggleHelpPop}>help</button>
             </div>
             <div className="editor-right-side">
                 <div className="editor-header-bar">
@@ -99,24 +181,23 @@ export default function Editor({board}) {
 
                     <span className="editor-grid-text">Grid Size:</span>
                     
-                    <input className='editor-size-input'></input>
+                    <input className='editor-size-input'
+                    type="text" onChange={handleRowChange} value={numRows}></input>
                     <span className="editor-grid-text">X</span>
-                    <input className='editor-size-input'></input>
+                    <input className='editor-size-input'
+                    type="text" onChange={handleColChange} value={numCols}></input>
                     
 
                     <span className="editor-code-text">Room Code:</span>
                     <span className="editor-code">1234</span>
                 </div>
-                <div className="editor-board-frame">
-                    {renderBoard()}
-                </div>
+                {doFrame()}
+                {renderHelpPop()}
                 {renderColorPop()}
                 <div className="editor-tab-content">
-                    {colorList.map((color, ind) => 
-                        renderColors(color, ind)
-                    )}
-                            <button className="editor-color-button" 
-                            onClick={() => toggleColorPop(!showColorPop)}>+</button>
+                    {
+                    renderTabContent()
+                    }
                 </div>
             </div>
         </div>
