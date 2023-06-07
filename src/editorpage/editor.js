@@ -4,17 +4,20 @@ import { useState, useRef } from "react";
 import BoardSpace from './boardspace'
 import ColorPopup from "./colorpicker";
 import HelpPopup from "./helppopup";
+import RulesPopup from "./rulespopup";
 
 export default function Editor({board}) {
     const navigate = useNavigate();
-    const tabList = ["Tiles", "Tokens", "Rules"];
+    const tabList = ["Tiles", "Tokens"];
     const [activeTab, setActiveTab] = useState("Tiles");
     const [showColorPop, setShowColorPop] = useState(false);
     const [showHelpPop, setShowHelpPop] = useState(false);
+    const [showRulesPop, setShowRulesPop] = useState(false);
     const [colorList, setColorList] = useState([]);
     const [currColor, setCurrColor] = useState("#FFFFFF");
     const [numRows, setNumRows] = useState(8);
     const [numCols, setNumCols] = useState(8);
+    const [rulesList, setRulesList] = useState([]);
 
     const colorRef = useRef();
     colorRef.current = currColor;
@@ -49,7 +52,8 @@ export default function Editor({board}) {
 
     //board frame functions
     const doFrame = () =>{
-        const frameStyle = {gridTemplateColumns: "repeat("+numCols+", 1fr)"};
+        const frameStyle = {gridTemplateColumns: "repeat("+numCols+", 1fr)",
+                            gridTemplateRows: "repeat("+numCols+", 1fr)"};
         return(<>
         <div className="editor-board-frame" style={frameStyle}>
                     {renderBoard()}
@@ -100,6 +104,16 @@ export default function Editor({board}) {
     const goToLoad = () =>{
         navigate("/boardbrush/load");
     }
+    const showActiveColor = () =>{
+        return(<>
+        <div className="editor-color-display">
+            <span className="editor-color-text">Active Color:</span>
+            <div className="editor-active-color"
+            style={{backgroundColor: currColor}}></div>
+        </div>
+        
+        </>);
+    }
 
     const renderTabContent = () =>{
         if(activeTab === "Tiles"){
@@ -108,6 +122,10 @@ export default function Editor({board}) {
             const addButton = <button className="editor-color-button" 
             onClick={() => setShowColorPop(!showColorPop)}>+</button>;
             return [...list, addButton];
+        }
+        else if(activeTab === "Tokens"){
+            return <div className="editor-tab-token" draggable="true" 
+            onDragStart={handleEditorTokenDragStart}></div>
         }
     }
 
@@ -122,9 +140,12 @@ export default function Editor({board}) {
     }
 
     //color picker functions
+    const toggleColorPop = () =>{
+        setShowColorPop(!showColorPop)
+    }
     const renderColorPop = () =>{
         if(showColorPop)
-            return <ColorPopup colorCB={getColor}/>
+            return <ColorPopup colorCB={getColor} closeCB={toggleColorPop}/>
     }
     const getColor = (color) =>{
         let temp = [...colorList];
@@ -146,6 +167,18 @@ export default function Editor({board}) {
             return <HelpPopup closeCB={toggleHelpPop}/>;
     }
 
+    //rule button functions
+    const toggleRulePop = (rules) =>{
+        if(showRulesPop){
+            setRulesList([...rules]);
+        }
+        setShowRulesPop(!showRulesPop);
+    }
+    const renderRulesPop = () =>{
+        if(showRulesPop)
+            return <RulesPopup rules={rulesList} closeCB={toggleRulePop}/>
+    }
+
     const handleRowChange = (e) =>{
         if(!isNaN(e.target.value)){
             setNumRows(e.target.value);
@@ -159,6 +192,14 @@ export default function Editor({board}) {
         return;
     }
 
+    //token functions
+    const handleEditorTokenDragStart = (e) =>{
+        e.target.id = "editortoken";
+        e
+        .dataTransfer
+        .setData('text/plain', e.target.id);
+    }
+
     return(<>
         <>
         <div className="editor-container">
@@ -168,8 +209,9 @@ export default function Editor({board}) {
                 <button className="editor-icon-button"
                 onClick={goToLoad}
                 >load?</button>
-                
-                <button className="editor-help-button" onClick={toggleHelpPop}>help</button>
+                <button className="editor-func-button" onClick={toggleRulePop}>Rules</button>
+                <button className="editor-func-button" onClick={toggleHelpPop}>help</button>
+                {showActiveColor()}
             </div>
             <div className="editor-right-side">
                 <div className="editor-header-bar">
@@ -194,6 +236,7 @@ export default function Editor({board}) {
                 {doFrame()}
                 {renderHelpPop()}
                 {renderColorPop()}
+                {renderRulesPop()}
                 <div className="editor-tab-content">
                     {
                     renderTabContent()

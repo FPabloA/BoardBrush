@@ -9,6 +9,15 @@
     bottom: 3vh;
 }
 
+.colorpck-close-button{
+    position: absolute;
+    font-size: 1vw;
+    right: 0px;
+    background-color: #181818;
+    color: #f3f3f3;
+    border: none;
+}
+
 .colorpck-header{
     color: #f3f3f3;
 }

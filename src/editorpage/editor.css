@@ -45,7 +45,7 @@ button{
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-.editor-help-button{
+.editor-func-button{
     margin-top: 10px;
     height: 5vh;
     width: 5vh;
@@ -71,6 +71,27 @@ button{
     flex-direction: column;
     flex-basis: 100%;
     height: 100%;
+}
+
+.editor-color-display{
+    display: flexbox;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 3vh;
+}
+
+.editor-color-text{
+    font-size: .75vw;
+}
+
+.editor-active-color{
+    border: 1px solid black;
+    border-radius: 4vh;
+    margin: 1vh auto;
+    width: 4vh;
+    height: 4vh;
 }
 
 .editor-header-bar{
@@ -154,11 +175,15 @@ button{
     column-gap: 0px;
     row-gap: 0px;
     grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
 }
 
 
 .editor-board-space{
     display: flex;
+    justify-content: center;
+    vertical-align: center;
+    align-items: center;
     position: relative;
     border: solid 1px;
     overflow: hidden;
@@ -220,4 +245,24 @@ button{
     font-size: 2.5vw;
     line-height: 4.5vh;
     margin-left: 2vw;
+}
+
+.editor-tab-token{
+    border-radius: 6vh;
+    width: 6vh;
+    height: 6vh;
+    background-color: white;
+    border: 1px solid black;
+    margin-left: 2vw;
+}
+.editor-tab-token:hover{
+    cursor: grab;
+}
+
+.editor-board-token{
+    border-radius: 100%;
+    width: 30%;
+    height: 75%;
+    background-color: white;
+    border: 1px solid black;
 }
