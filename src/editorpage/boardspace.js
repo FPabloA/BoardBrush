@@ -1,10 +1,11 @@
-function BoardSpace({doColorCB, row, col, color, }){
+function BoardSpace({doColorCB, row, col, color, img}){
     const handleClick = () =>{
         //console.log(doColorCB);
         doColorCB(row, col);
     }
 
     const tokenDragCB = (e) =>{
+        e.dataTransfer.clearData();
         e.target.id = "boardtoken";
         e
         .dataTransfer
@@ -18,12 +19,13 @@ function BoardSpace({doColorCB, row, col, color, }){
 
     const handleDragOver = (e) =>{
         e.preventDefault();
+        e.stopPropagation()
     }
     const handleDrop = (e) =>{
         e.preventDefault();
         const id = e
         .dataTransfer
-        .getData('text');
+        .getData('text/plain');
         let draggableElement;
         if(id === 'editortoken'){
             draggableElement = document.getElementById(id).cloneNode(true);
@@ -34,18 +36,28 @@ function BoardSpace({doColorCB, row, col, color, }){
         draggableElement.className = "editor-board-token";
         draggableElement.addEventListener('dragstart', tokenDragCB, false);
         draggableElement.addEventListener('dragend', tokenDragEndCB, false);
-
-        const dropzone = e.target;
+        draggableElement.id = "";
+        let dropzone = e.target;
         if(dropzone.hasChildNodes()){
             dropzone.removeChild(dropzone.firstChild);
         }
+        if(dropzone.parentNode.className === "editor-board-space"){
+            dropzone = dropzone.parentNode;
+        }
         dropzone.append(draggableElement);
+    }
+
+    const showImg = () =>{
+        if(img)
+            return <img className="editor-tile-img" src={img} draggable="false"></img>
     }
 
     return(<>
         <div className="editor-board-space" onClick={handleClick} 
         style={{backgroundColor: color}} onDragOver={handleDragOver}
-        onDrop={handleDrop}/>
+        onDrop={handleDrop} draggable="false">
+            {showImg()}
+        </div>
     </>)
 }
 

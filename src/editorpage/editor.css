@@ -92,6 +92,14 @@ button{
     margin: 1vh auto;
     width: 4vh;
     height: 4vh;
+    overflow: hidden;
+}
+
+.editor-active-img{
+    object-fit: fill;
+    object-position: center;
+    height: 100%;
+    width: 100%;
 }
 
 .editor-header-bar{
@@ -247,22 +255,83 @@ button{
     margin-left: 2vw;
 }
 
+.editor-tileimg-button{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: 6vh;
+    height: 6vh;
+    background-color: white;
+    border: 1px solid black;
+    font-size: 2.5vw;
+    line-height: 4.5vh;
+    margin-left: 2vw;
+}
+.editor-tileimg-button:hover{
+    cursor: pointer;
+}
+
+.editor-tile-img{
+    object-fit: fill;
+    object-position: center;
+    height: 100%;
+    width: 100%;
+}
+
+.editor-tile-upload{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    vertical-align: center;
+    width: 6vh;
+    height: 6vh;
+    background-color: white;
+    border: 1px solid black;
+    font-size: .75vw;
+    margin-left: 2vw;
+}
+
 .editor-tab-token{
     border-radius: 6vh;
     width: 6vh;
     height: 6vh;
     background-color: white;
     border: 1px solid black;
+    overflow: hidden;
     margin-left: 2vw;
 }
 .editor-tab-token:hover{
     cursor: grab;
 }
 
+.editor-token-upload{
+    border-radius: 6vh;
+    width: 6vh;
+    height: 6vh;
+    background-color: white;
+    border: 1px solid black;
+    margin-left: 2vw;
+    font-size: .75vw;
+    text-align: center;
+    justify-content: center;
+    line-height: 4.75vh;
+}
+.editor-token-upload:hover{
+    cursor: pointer;
+}
+
 .editor-board-token{
+    position: absolute;
     border-radius: 100%;
     width: 30%;
     height: 75%;
     background-color: white;
     border: 1px solid black;
+}
+
+.editor-token-img{
+    object-fit: fill;
+    object-position: center;
+    height: 100%;
+    width: 100%;
 }

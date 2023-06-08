@@ -1,10 +1,11 @@
 import "./editor.css"
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from "react";
-import BoardSpace from './boardspace'
+import BoardSpace from './boardspace';
 import ColorPopup from "./colorpicker";
 import HelpPopup from "./helppopup";
 import RulesPopup from "./rulespopup";
+import UploadButton from "./uploadbutton";
 
 export default function Editor({board}) {
     const navigate = useNavigate();
@@ -15,12 +16,17 @@ export default function Editor({board}) {
     const [showRulesPop, setShowRulesPop] = useState(false);
     const [colorList, setColorList] = useState([]);
     const [currColor, setCurrColor] = useState("#FFFFFF");
+    const [tileImgList, setTileImgList] = useState([]);
+    const [currTileImg, setCurrTileImg] = useState("");
+    const [tokenImgList, setTokenImgList] = useState([]);
     const [numRows, setNumRows] = useState(8);
     const [numCols, setNumCols] = useState(8);
     const [rulesList, setRulesList] = useState([]);
 
     const colorRef = useRef();
     colorRef.current = currColor;
+    const tileImgRef = useRef();
+    tileImgRef.current = currTileImg;
 
     
 
@@ -29,11 +35,9 @@ export default function Editor({board}) {
     
 
     const colorSpaces = (row, col) =>{
-        console.log(colorRef.current);
-        //need to fix this hardcode
         const index = (row * numCols) + col;
         immSpaces[index] = <BoardSpace key={index} doColorCB={colorSpaces}
-            row={row} col={col} color={colorRef.current}/>;
+            row={row} col={col} color={colorRef.current} img={tileImgRef.current}/>;
         setBoardGrid([...immSpaces]);
         
     }
@@ -109,7 +113,9 @@ export default function Editor({board}) {
         <div className="editor-color-display">
             <span className="editor-color-text">Active Color:</span>
             <div className="editor-active-color"
-            style={{backgroundColor: currColor}}></div>
+            style={{backgroundColor: currColor}}>
+                <img className="editor-active-img" src={currTileImg}></img>
+            </div>
         </div>
         
         </>);
@@ -117,15 +123,21 @@ export default function Editor({board}) {
 
     const renderTabContent = () =>{
         if(activeTab === "Tiles"){
-            let list = colorList.map((color, ind) => 
+            let colorArr = colorList.map((color, ind) => 
             renderColors(color, ind));
+            let imgArr = tileImgList.map((img, ind) => 
+            renderImgs(img, ind));
             const addButton = <button className="editor-color-button" 
             onClick={() => setShowColorPop(!showColorPop)}>+</button>;
-            return [...list, addButton];
+            const uploadButton = <UploadButton name="editor-tile-upload" imgCB={tileImg}/>;
+            return [...colorArr, addButton, ...imgArr, uploadButton];
         }
         else if(activeTab === "Tokens"){
-            return <div className="editor-tab-token" draggable="true" 
-            onDragStart={handleEditorTokenDragStart}></div>
+            let imgArr = tokenImgList.map((img, ind) => 
+            renderTokens(img, ind));
+            const uploadButton = <UploadButton name="editor-token-upload" imgCB={tokenImg}/>;
+            return [...imgArr,uploadButton];
+            
         }
     }
 
@@ -135,8 +147,47 @@ export default function Editor({board}) {
         style={{backgroundColor: color}} value={color} onClick={onColorClick} key={ind}></button>
     }
     const onColorClick = (e) =>{
-        console.log(e.target.value);
         setCurrColor(e.target.value);
+        setCurrTileImg(null);
+    }
+
+    //img tile button functions
+    const tileImg = (img) =>{
+        console.log("in tile img")
+        const imgURL = URL.createObjectURL(img);
+        let temp = [...tileImgList];
+        if(temp.length > 5){
+            temp.shift();
+        }
+        temp.push(imgURL);
+        setTileImgList([...temp]);
+    }
+    const renderImgs = (img, ind) =>{
+        return <div className="editor-tileimg-button"
+        key={ind} onClick={onTileImgClick}>
+            <img className="editor-tile-img" src={img} ></img>
+        </div>
+    }
+    const onTileImgClick = (e) =>{
+        setCurrTileImg(e.target.src);
+        setCurrColor(null);
+    }
+
+    //img token button functions
+    const tokenImg = (img) =>{
+        const imgURL = URL.createObjectURL(img);
+        let temp = [...tokenImgList];
+        if(temp.length > 10){
+            temp.shift();
+        }
+        temp.push(imgURL);
+        setTokenImgList([...temp]);
+    }
+    const renderTokens = (img, ind) =>{
+        return <div className="editor-tab-token"
+        key={ind} onClick={onTileImgClick} onDragStart={handleEditorTokenDragStart}>
+            <img className="editor-token-img" src={img} ></img>
+        </div>
     }
 
     //color picker functions
@@ -150,13 +201,13 @@ export default function Editor({board}) {
     const getColor = (color) =>{
         let temp = [...colorList];
         if(colorList.length > 8){
-            console.log("called?")
             temp.shift()
         }
         temp.push(color);
         setColorList([...temp]);
         setShowColorPop(!showColorPop)
     }
+    
 
     //help button functions
     const toggleHelpPop = () =>{
@@ -194,6 +245,7 @@ export default function Editor({board}) {
 
     //token functions
     const handleEditorTokenDragStart = (e) =>{
+        e.dataTransfer.clearData('text/plain');
         e.target.id = "editortoken";
         e
         .dataTransfer
