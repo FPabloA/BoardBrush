@@ -183,12 +183,15 @@ export default function Editor({board}) {
         temp.push(imgURL);
         setTokenImgList([...temp]);
     }
+    //idk dude try to just have the image without the div 
     const renderTokens = (img, ind) =>{
-        return <div className="editor-tab-token"
-        key={ind} onClick={onTileImgClick} onDragStart={handleEditorTokenDragStart}>
-            <img className="editor-token-img" src={img} ></img>
-        </div>
+        // return <div className="editor-tab-token"
+        // key={ind} onClick={onTileImgClick} >
+        return <img className="editor-tab-token" src={img} onDragStart={handleEditorTokenDragStart}></img>
+        {/* </div>;  */}
     }
+
+    
 
     //color picker functions
     const toggleColorPop = () =>{
@@ -245,6 +248,8 @@ export default function Editor({board}) {
 
     //token functions
     const handleEditorTokenDragStart = (e) =>{
+        //e.preventDefault();
+        console.log(e.target);
         e.dataTransfer.clearData('text/plain');
         e.target.id = "editortoken";
         e
