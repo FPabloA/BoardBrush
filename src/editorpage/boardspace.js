@@ -1,4 +1,4 @@
-function BoardSpace({doColorCB, row, col, color, img}){
+function BoardSpace({doColorCB, row, col, color, img, undoCB}){
     const handleClick = () =>{
         //console.log(doColorCB);
         doColorCB(row, col);
@@ -12,6 +12,7 @@ function BoardSpace({doColorCB, row, col, color, img}){
         .setData('text/plain', e.target.id);
     }
     const tokenDragEndCB = (e) =>{
+        //undoCB()
         if(e.dataTransfer.dropEffect === 'none'){
             e.target.remove();
         }
@@ -23,6 +24,7 @@ function BoardSpace({doColorCB, row, col, color, img}){
     }
     const handleDrop = (e) =>{
         e.preventDefault();
+        undoCB();
         const id = e
         .dataTransfer
         .getData('text/plain');

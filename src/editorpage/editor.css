@@ -201,10 +201,10 @@ button{
     vertical-align: center;
     justify-content: center;
     position: absolute;
-    bottom: -3px;
+    bottom: -0.2vh;
     border: 1px;
     box-sizing: border-box;
-    height: 54px;
+    height: 6.5vh;
     width: fit-content;
     box-sizing: border-box;
 }
@@ -334,4 +334,25 @@ button{
     object-position: center;
     height: 100%;
     width: 100%;
+}
+
+.editor-undo-section{
+    position: absolute;
+    display: flex;
+    height: auto;
+    width: auto;
+    right: 1vw;
+}
+
+.editor-_do-button{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    vertical-align: center;
+    width: 4.5vh;
+    height: 4.5vh;
+    background-color: white;
+    border: 1px solid black;
+    font-size: .75vw;
+    margin-left: 1.25vw;
 }

@@ -10,6 +10,9 @@ import UploadButton from "./uploadbutton";
 export default function Editor({board}) {
     const navigate = useNavigate();
     const tabList = ["Tiles", "Tokens"];
+
+    const [boardGrid, setBoardGrid] = useState([]);
+
     const [activeTab, setActiveTab] = useState("Tiles");
     const [showColorPop, setShowColorPop] = useState(false);
     const [showHelpPop, setShowHelpPop] = useState(false);
@@ -23,36 +26,89 @@ export default function Editor({board}) {
     const [numCols, setNumCols] = useState(8);
     const [rulesList, setRulesList] = useState([]);
 
+    const [undoQueue, setUndoQueue] = useState([]);
+    const [redoQueue, setRedoQueue] = useState([]);
+
+    const boardRef = useRef();
+    boardRef.current = boardGrid;
     const colorRef = useRef();
     colorRef.current = currColor;
     const tileImgRef = useRef();
     tileImgRef.current = currTileImg;
+    const undoRef = useRef();
+    undoRef.current = undoQueue;
 
     
 
     let immSpaces = [];
 
+    const addUndo = () =>{
+        console.log("callling undo");
+        const list = [...undoRef.current];
+        if(undoRef.current.length >= 10){
+            list.shift()
+        }
+        list.push(boardRef.current);
+        setUndoQueue([...list])
+    }
+    const onUndo = () =>{
+        if(undoRef.current.length > 0){
+            addRedo()
+            console.log(undoRef.current)
+            const list = [...undoRef.current];
+            const newBoard = list.pop();
+            setBoardGrid([...newBoard]);
+            setUndoQueue([...list]);
+            console.log(undoRef.current);
+        }
+        else{
+            console.log("undo queue is empty");
+        }
+    }
+    const addRedo = () =>{
+        const list = [...redoQueue];
+        if(undoQueue.length >= 5){
+            list.shift()
+        }
+        list.push(boardGrid);
+        setRedoQueue([...list])
+    }
+    const onRedo = () =>{
+        if(redoQueue.length > 0){
+            addUndo()
+            const list = [...redoQueue];
+            const newBoard = list.pop();
+            setBoardGrid([...newBoard]);
+            setRedoQueue([...list]);
+        }
+        else{
+            console.log("redo queue is empty");
+        }
+    }
+
     
 
     const colorSpaces = (row, col) =>{
+        addUndo();
         const index = (row * numCols) + col;
-        immSpaces[index] = <BoardSpace key={index} doColorCB={colorSpaces}
+        const temp = [...boardRef.current]
+        temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}
             row={row} col={col} color={colorRef.current} img={tileImgRef.current}/>;
-        setBoardGrid([...immSpaces]);
+        setBoardGrid([...temp]);
         
     }
 
-    const [boardGrid, setBoardGrid] = useState(() => {
-        let spaces = [];
-            for(let i = 0; i < numRows; i++){
-                for(let j = 0; j < numCols; j++){
-                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
-                    row={i} col={j} color={"#FFFFFF"}/>);
-                }
-            }
-            immSpaces = spaces;
-            return spaces;
-    });
+    // const [boardGrid, setBoardGrid] = useState(() => {
+    //     let spaces = [];
+    //         for(let i = 0; i < numRows; i++){
+    //             for(let j = 0; j < numCols; j++){
+    //                 spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
+    //                 row={i} col={j} color={"#FFFFFF"}/>);
+    //             }
+    //         }
+    //         immSpaces = spaces;
+    //         return spaces;
+    // });
 
     //board frame functions
     const doFrame = () =>{
@@ -74,11 +130,10 @@ export default function Editor({board}) {
             for(let i = 0; i < numRows; i++){
                 for(let j = 0; j < numCols; j++){
                     spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
-                    row={i} col={j} color={"#FFFFFF"}/>);
+                    row={i} col={j} color={"#FFFFFF"} undoCB={addUndo}/>);
                 }
             }
-            immSpaces = spaces;
-            setBoardGrid([...immSpaces]);
+            setBoardGrid([...spaces]);
             return spaces;
             
         }
@@ -122,6 +177,12 @@ export default function Editor({board}) {
     }
 
     const renderTabContent = () =>{
+        const undoSection = <>
+        <div className="editor-undo-section">
+            <button className="editor-_do-button" onClick={onUndo}>Undo</button>
+            <button className="editor-_do-button" onClick={onRedo}>Redo</button>
+        </div>
+        </>;
         if(activeTab === "Tiles"){
             let colorArr = colorList.map((color, ind) => 
             renderColors(color, ind));
@@ -130,13 +191,13 @@ export default function Editor({board}) {
             const addButton = <button className="editor-color-button" 
             onClick={() => setShowColorPop(!showColorPop)}>+</button>;
             const uploadButton = <UploadButton name="editor-tile-upload" imgCB={tileImg}/>;
-            return [...colorArr, addButton, ...imgArr, uploadButton];
+            return [...colorArr, addButton, ...imgArr, uploadButton, undoSection];
         }
         else if(activeTab === "Tokens"){
             let imgArr = tokenImgList.map((img, ind) => 
             renderTokens(img, ind));
             const uploadButton = <UploadButton name="editor-token-upload" imgCB={tokenImg}/>;
-            return [...imgArr,uploadButton];
+            return [...imgArr,uploadButton, undoSection];
             
         }
     }
