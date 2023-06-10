@@ -22,6 +22,7 @@ export default function Editor({board}) {
     const [tileImgList, setTileImgList] = useState([]);
     const [currTileImg, setCurrTileImg] = useState("");
     const [tokenImgList, setTokenImgList] = useState([]);
+    const [currToken, setCurrToken] = useState("");
     const [numRows, setNumRows] = useState(8);
     const [numCols, setNumCols] = useState(8);
     const [rulesList, setRulesList] = useState([]);
@@ -37,10 +38,10 @@ export default function Editor({board}) {
     tileImgRef.current = currTileImg;
     const undoRef = useRef();
     undoRef.current = undoQueue;
+    const tokenRef = useRef();
+    tokenRef.current = currToken;
 
     
-
-    let immSpaces = [];
 
     const addUndo = () =>{
         console.log("callling undo");
@@ -61,13 +62,10 @@ export default function Editor({board}) {
             setUndoQueue([...list]);
             console.log(undoRef.current);
         }
-        else{
-            console.log("undo queue is empty");
-        }
     }
     const addRedo = () =>{
         const list = [...redoQueue];
-        if(undoQueue.length >= 5){
+        if(redoQueue.length >= 5){
             list.shift()
         }
         list.push(boardGrid);
@@ -81,34 +79,21 @@ export default function Editor({board}) {
             setBoardGrid([...newBoard]);
             setRedoQueue([...list]);
         }
-        else{
-            console.log("redo queue is empty");
-        }
     }
 
     
 
-    const colorSpaces = (row, col) =>{
+    const colorSpaces = (row, col, tokenImg) =>{
         addUndo();
         const index = (row * numCols) + col;
         const temp = [...boardRef.current]
         temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}
-            row={row} col={col} color={colorRef.current} img={tileImgRef.current}/>;
+            row={row} col={col} color={colorRef.current} img={tileImgRef.current} 
+            undoCB={addUndo} token={tokenImg} tokenDragCB={handleEditorTokenDragStart}
+            tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>;
         setBoardGrid([...temp]);
         
     }
-
-    // const [boardGrid, setBoardGrid] = useState(() => {
-    //     let spaces = [];
-    //         for(let i = 0; i < numRows; i++){
-    //             for(let j = 0; j < numCols; j++){
-    //                 spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
-    //                 row={i} col={j} color={"#FFFFFF"}/>);
-    //             }
-    //         }
-    //         immSpaces = spaces;
-    //         return spaces;
-    // });
 
     //board frame functions
     const doFrame = () =>{
@@ -130,7 +115,8 @@ export default function Editor({board}) {
             for(let i = 0; i < numRows; i++){
                 for(let j = 0; j < numCols; j++){
                     spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
-                    row={i} col={j} color={"#FFFFFF"} undoCB={addUndo}/>);
+                    row={i} col={j} color={"#FFFFFF"} undoCB={addUndo} tokenDragCB={handleEditorTokenDragStart}
+                    tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>);
                 }
             }
             setBoardGrid([...spaces]);
@@ -246,10 +232,7 @@ export default function Editor({board}) {
     }
     //idk dude try to just have the image without the div 
     const renderTokens = (img, ind) =>{
-        // return <div className="editor-tab-token"
-        // key={ind} onClick={onTileImgClick} >
-        return <img className="editor-tab-token" src={img} onDragStart={handleEditorTokenDragStart}></img>
-        {/* </div>;  */}
+        return <img className="editor-tab-token" key={ind} value={img} src={img} onDragStart={handleEditorTokenDragStart}></img>
     }
 
     
@@ -309,13 +292,29 @@ export default function Editor({board}) {
 
     //token functions
     const handleEditorTokenDragStart = (e) =>{
-        //e.preventDefault();
-        console.log(e.target);
-        e.dataTransfer.clearData('text/plain');
-        e.target.id = "editortoken";
-        e
-        .dataTransfer
-        .setData('text/plain', e.target.id);
+        setCurrToken(e.target.src);
+    }
+    const clearOldSpace = (row, col, color, img) =>{
+        console.log("clearing")
+        const index = (row * numCols) + col;
+        const temp = [...boardRef.current]
+        temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}
+            row={row} col={col} color={color} img={img} 
+            undoCB={addUndo} token={""} tokenDragCB={handleEditorTokenDragStart}
+            tokenDropCB={handleTokenDrop}/>;
+        setBoardGrid([...temp]);
+    }
+    const handleTokenDrop = (row, col, color, img) =>{
+        addUndo();
+        //console.log("handling drop");
+        const index = (row * numCols) + col;
+        const temp = [...boardRef.current]
+        temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}
+            row={row} col={col} color={color} img={img} 
+            undoCB={addUndo} token={tokenRef.current} tokenDragCB={handleEditorTokenDragStart}
+            tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>;
+        setBoardGrid([...temp]);
+        setCurrToken("");
     }
 
     return(<>

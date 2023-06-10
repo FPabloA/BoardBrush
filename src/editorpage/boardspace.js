@@ -1,21 +1,27 @@
-function BoardSpace({doColorCB, row, col, color, img, undoCB}){
+function BoardSpace({doColorCB, row, col, color, img, undoCB, token, tokenDragCB, tokenDropCB, tokenDragEndCB}){
     const handleClick = () =>{
         //console.log(doColorCB);
-        doColorCB(row, col);
+        doColorCB(row, col, token);
     }
 
-    const tokenDragCB = (e) =>{
-        e.dataTransfer.clearData();
-        e.target.id = "boardtoken" + row + "" + col;
-        e
-        .dataTransfer
-        .setData('text/plain', e.target.id);
-    }
-    const tokenDragEndCB = (e) =>{
+    // const tokenDragCB = (e) =>{
+    //     e.dataTransfer.clearData();
+    //     e.target.id = "boardtoken" + row + "" + col;
+    //     e
+    //     .dataTransfer
+    //     .setData('text/plain', e.target.id);
+    // }
+
+    const handleDragEnd = () =>{
         //undoCB()
-        if(e.dataTransfer.dropEffect === 'none'){
-            e.target.remove();
-        }
+        // if(e.dataTransfer.dropEffect === 'none'){
+        //     e.target.remove();
+        // }
+        tokenDragEndCB(row, col, color, img)
+    }
+
+    const handleDragStart = (e) =>{
+        tokenDragCB(e);
     }
 
     const handleDragOver = (e) =>{
@@ -24,33 +30,7 @@ function BoardSpace({doColorCB, row, col, color, img, undoCB}){
     }
     const handleDrop = (e) =>{
         e.preventDefault();
-        undoCB();
-        const id = e
-        .dataTransfer
-        .getData('text/plain');
-        let draggableElement;
-        if(id === 'editortoken'){
-            let original = document.getElementById(id)
-            original.id = "";
-            draggableElement = original.cloneNode(true);
-        }
-        else{
-            draggableElement = document.getElementById(id);
-        }
-        draggableElement.className = "editor-board-token";
-        draggableElement.addEventListener('dragstart', tokenDragCB, false);
-        draggableElement.addEventListener('dragend', tokenDragEndCB, false);
-        
-        let dropzone = e.target;
-        if(dropzone.hasChildNodes()){
-            dropzone.removeChild(dropzone.firstChild);
-        }
-        if(dropzone.parentNode.className === "editor-board-space"){
-            dropzone = dropzone.parentNode;
-        }
-        draggableElement.id = ""
-        console.log(draggableElement)
-        dropzone.append(draggableElement);
+        tokenDropCB(row, col, color, img);
     }
 
     const showImg = () =>{
@@ -58,11 +38,17 @@ function BoardSpace({doColorCB, row, col, color, img, undoCB}){
             return <img className="editor-tile-img" src={img} draggable="false"></img>
     }
 
+    const showToken = () =>{
+        if(token)
+            return <img className="editor-board-token" value={token} src={token} onDragStart={handleDragStart} onDragEnd={handleDragEnd}/>
+    }
+
     return(<>
         <div className="editor-board-space" onClick={handleClick} 
         style={{backgroundColor: color}} onDragOver={handleDragOver}
         onDrop={handleDrop} draggable="false">
             {showImg()}
+            {showToken()}
         </div>
     </>)
 }
