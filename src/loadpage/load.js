@@ -1,15 +1,17 @@
+import { useState } from "react";
 import "./load.css";
 import { useNavigate } from 'react-router-dom';
 
 function Load({loggedUser, doEditor, signoutCB}) {
     const navigate = useNavigate();
+
     const parseUser = () => {
         const ind = loggedUser.email.indexOf("@");
         return loggedUser.email.substring(0, ind);
     }
 
     const handleNewBoard = () =>{
-        doEditor(null);
+        doEditor(null, loggedUser);
         navigate('/boardbrush/edit');
     }
 

@@ -1,7 +1,7 @@
 import './App.css';
 import Login from './loginpage/login';
 import Load from './loadpage/load';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate }
     from 'react-router-dom';
 // Import the functions you need from the SDKs you need
@@ -34,6 +34,24 @@ const db = getFirestore(app);
 function AppComponent() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+
+    useEffect (() =>{
+      try{
+        const val = window.sessionStorage.getItem("user");
+        if(val){
+          setUser(JSON.parse(val));
+        }
+      }catch(err){
+        console.log("user error");
+        return;
+      }
+    }, []);
+
+    useEffect(() =>{
+      if(user != null){
+        window.sessionStorage.setItem("user", JSON.stringify(user));
+      }
+    }, [user]);
 
     const newAcctCallback = (email, password) =>{
       createUserWithEmailAndPassword(auth, email, password)

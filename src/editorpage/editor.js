@@ -1,15 +1,27 @@
 import "./editor.css"
 import { useNavigate } from 'react-router-dom';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import BoardSpace from './boardspace';
 import ColorPopup from "./colorpicker";
 import HelpPopup from "./helppopup";
 import RulesPopup from "./rulespopup";
+import SavePopup from "./savepopup";
 import UploadButton from "./uploadbutton";
 
-export default function Editor({board}) {
+
+export default function Editor({board, user}) {
     const navigate = useNavigate();
     const tabList = ["Tiles", "Tokens"];
+
+    useEffect (() =>{
+        if(colorList.length === 0){
+            fetchColors();
+        }
+        if(rulesList.length === 0){
+            fetchRules();
+        }
+        
+      }, []);
 
     const [boardGrid, setBoardGrid] = useState([]);
 
@@ -17,16 +29,31 @@ export default function Editor({board}) {
     const [showColorPop, setShowColorPop] = useState(false);
     const [showHelpPop, setShowHelpPop] = useState(false);
     const [showRulesPop, setShowRulesPop] = useState(false);
+    const [showSavePop, setShowSavePop] = useState(false);
+
     const [colorList, setColorList] = useState([]);
     const [currColor, setCurrColor] = useState("#FFFFFF");
+    //stores colorlist in session so it persists w/ refreshes
+    useEffect(() =>{
+        if(colorList.length > 0){
+          window.sessionStorage.setItem("colors", JSON.stringify(colorList));
+        }
+      }, [colorList]);
+
     const [tileImgList, setTileImgList] = useState([]);
     const [currTileImg, setCurrTileImg] = useState("");
+
     const [tokenImgList, setTokenImgList] = useState([]);
     const [currToken, setCurrToken] = useState("");
     const [numRows, setNumRows] = useState(8);
     const [numCols, setNumCols] = useState(8);
     const [rulesList, setRulesList] = useState([]);
-
+    //stores ruleslist in session so it persists w/ refreshes
+    useEffect(() =>{
+        if(rulesList.length > 0){
+          window.sessionStorage.setItem("rules", JSON.stringify(rulesList));
+        }
+      }, [rulesList]);
     const [undoQueue, setUndoQueue] = useState([]);
     const [redoQueue, setRedoQueue] = useState([]);
 
@@ -197,6 +224,16 @@ export default function Editor({board}) {
         setCurrColor(e.target.value);
         setCurrTileImg(null);
     }
+    const fetchColors = () =>{
+        try{
+            const val = window.sessionStorage.getItem("colors");
+            if(val){
+              setColorList(JSON.parse(val));
+            }
+          }catch(err){
+            console.log("color error");
+          }
+    }
 
     //img tile button functions
     const tileImg = (img) =>{
@@ -276,6 +313,25 @@ export default function Editor({board}) {
         if(showRulesPop)
             return <RulesPopup rules={rulesList} closeCB={toggleRulePop}/>
     }
+    const fetchRules = () =>{
+        try{
+            const val = window.sessionStorage.getItem("rules");
+            if(val){
+              setRulesList(JSON.parse(val));
+            }
+          }catch(err){
+            console.log("rule list error");
+          }
+    }
+
+    //save button functions
+    const toggleSavePop = () =>{
+        setShowSavePop(!showSavePop);
+    }
+    const renderSavePop = () =>{
+        if(showSavePop)
+            return <SavePopup closeCB={toggleSavePop}/>
+    }
 
     const handleRowChange = (e) =>{
         if(!isNaN(e.target.value)){
@@ -322,7 +378,7 @@ export default function Editor({board}) {
         <div className="editor-container">
             
             <div className="editor-tool-bar">
-                <button className="editor-icon-button">save</button>
+                <button className="editor-icon-button" onClick={toggleSavePop}>save</button>
                 <button className="editor-icon-button"
                 onClick={goToLoad}
                 >load?</button>
@@ -354,6 +410,7 @@ export default function Editor({board}) {
                 {renderHelpPop()}
                 {renderColorPop()}
                 {renderRulesPop()}
+                {renderSavePop()}
                 <div className="editor-tab-content">
                     {
                     renderTabContent()
