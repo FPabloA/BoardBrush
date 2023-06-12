@@ -1,15 +1,18 @@
 import "./editor.css"
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from "react";
+import { ref , set } from "firebase/database";
 import BoardSpace from './boardspace';
 import ColorPopup from "./colorpicker";
 import HelpPopup from "./helppopup";
 import RulesPopup from "./rulespopup";
 import SavePopup from "./savepopup";
 import UploadButton from "./uploadbutton";
+import { getDatabase } from "firebase/database";
 
+const db = getDatabase();
 
-export default function Editor({board, user}) {
+export default function Editor({board, user, folders}) {
     const navigate = useNavigate();
     const tabList = ["Tiles", "Tokens"];
 
@@ -330,7 +333,33 @@ export default function Editor({board, user}) {
     }
     const renderSavePop = () =>{
         if(showSavePop)
-            return <SavePopup closeCB={toggleSavePop}/>
+            return <SavePopup closeCB={toggleSavePop} saveCB={doSave} folders={folders}/>
+    }
+    const makeColorJSON = () =>{
+        const temp = [...boardRef.current];
+        let boardColors = [];
+            for(let i = 0; i < numRows; i++){
+                for(let j = 0; j < numCols; j++){
+                    boardColors.push(temp[i*numRows + j].props.color);
+                }
+            }
+            return boardColors;
+    }
+    const doSave = (folder, boardName) =>{
+        // check if folder already
+        const path = 'users/' + user.uid + folder + boardName + '/'
+        toggleSavePop();
+        //need to enter something
+        if(folder === "" || boardName === ""){
+            return;
+        }
+        const boardJSON = JSON.stringify(makeColorJSON());
+        //console.log(boardJSON);
+        // set(ref(db, 'users/' + user.uid +"/"+ folder +"/"+ boardName), {
+        //     numRows: numRows,
+        //     numCols: numCols,
+        //     board: boardJSON
+        // }); 
     }
 
     const handleRowChange = (e) =>{
@@ -351,7 +380,6 @@ export default function Editor({board, user}) {
         setCurrToken(e.target.src);
     }
     const clearOldSpace = (row, col, color, img) =>{
-        console.log("clearing")
         const index = (row * numCols) + col;
         const temp = [...boardRef.current]
         temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}

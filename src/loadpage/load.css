@@ -92,7 +92,7 @@ button{
 
 .load-new-text{
     font-size: 1.25vw;
-    margin-right: 5px;
+    
 }
 
 .load-folders{
@@ -111,6 +111,24 @@ button{
     position: relative;
     height: 6vh;
     width: 100%;
+}
+
+.load-folder-section{
+    margin: 2vw;
+    border: 1px solid black;
+    overflow-y: auto;
+}
+
+.load-folder{
+    align-items: center;
+    background-color: white;
+    border-style: solid;
+    border-color: black;
+    border-radius: 15px;
+    height: auto;
+    width: auto;
+    font-size: 1.75vw;
+    margin-right: 1vw;
 }
 
 .load-footer{

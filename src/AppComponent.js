@@ -34,6 +34,8 @@ const db = getFirestore(app);
 function AppComponent() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
+    const [gameBoard, setGameBoard] = useState(null);
+    const [dirKeys, setDirKeys] = useState([]);
 
     useEffect (() =>{
       try{
@@ -93,7 +95,7 @@ function AppComponent() {
     const renderLogin = () =>{
         if(user){
             return(<>
-                <Load loggedUser={user} doEditor={loadEditor} signoutCB={signoutCallback}/>
+                <Load loggedUser={user} doEditor={setEditorVars} signoutCB={signoutCallback} database={db}/>
             </>)
         }
         else{
@@ -103,17 +105,21 @@ function AppComponent() {
         }
     }
 
-    const loadEditor = (board) =>{
-      if(board){
+    const loadEditor = () =>{
+      if(gameBoard){
         return(<>
-          <Editor board={board}/>
+          <Editor board={gameBoard} user={user} database={db} folders={dirKeys}/>
         </>)
       }
       else{
         return(<>
-          <Editor board={null}/>
+          <Editor board={null} user={user} database={db} folders={dirKeys}/>
         </>)
       }
+    }
+    const setEditorVars = (board, keys) =>{
+      setGameBoard(board);
+      setDirKeys(keys);
     }
   
     return (<>
