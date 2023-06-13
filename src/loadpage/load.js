@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { ref, child, get, getDatabase } from "firebase/database";
 import { initializeApp } from "firebase/app";
+import FolderPopup from "./folderpopup";
 import "./load.css";
-import { render } from "@testing-library/react";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyAacW5UZ77qVxkLIr_sqn30I-0t3YzMNS8",
@@ -18,15 +19,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
-async function getDir(){
-    
-}
-
-
-function Load({loggedUser, doEditor, signoutCB, database}) {
+function Load({loggedUser, doEditor, signoutCB}) {
     const navigate = useNavigate();
     const [directory, setDirectory] = useState(null);
     const [dirKeys, setDirKeys] = useState([]);
+    const [currFolder, setCurrFolder] = useState("");
+    const [currBoards, setCurrBoards] = useState([]);
+    const [showFolderPopup, setShowFolderPopup] = useState(false);
+    
     
     //this is probably incredibly inefficient
     get(child(ref(db), `users/${loggedUser.uid}`)).then((snapshot) => {
@@ -40,6 +40,7 @@ function Load({loggedUser, doEditor, signoutCB, database}) {
         }).then((result) => doDir(result));
     
     const doDir = (promise) =>{
+        
         if(directory)
             return;
         setDirectory(promise);
@@ -60,18 +61,50 @@ function Load({loggedUser, doEditor, signoutCB, database}) {
         signoutCB();
     }
     
+    //folder functions
    const renderFolders = () =>{
         if(directory){
             const keys = [...dirKeys];
-            let folders = keys.map((folder) =>
-                doFolders(folder)
+            let folders = keys.map((folder, ind) =>
+                doFolders(folder, ind)
             )
             return folders;  
         }
            
     }
-    const doFolders = (folder) =>{
-        return <button className="load-folder" value={folder}>{folder}</button>
+    const doFolders = (folder, ind) =>{
+        return <button className="load-folder" key={ind} value={folder} onClick={handleFolderClick}>{folder}</button>
+    }
+    const handleFolderClick = (e) =>{
+        const folderDir = directory[e.target.value];
+        const boardList = Object.keys(folderDir)
+        setCurrBoards([...boardList])
+        setCurrFolder(e.target.value);
+        toggleFolderPopup()
+    }
+    const toggleFolderPopup = () =>{
+        setShowFolderPopup(!showFolderPopup)
+    }
+    const renderFolderPopup = () =>{
+        if(showFolderPopup)
+            return <FolderPopup deleteCB={handleDel} loadCB={handleLoad} folder={currFolder} boardList={currBoards} closeCB={toggleFolderPopup}/>
+    }
+
+    const handleDel = (path) =>{
+        //do the delete
+        console.log("deleting " + path);
+        toggleFolderPopup();
+        setDirectory(null); 
+    }
+    const handleLoad = (folder, board) =>{
+        toggleFolderPopup();
+        console.log("loading " + folder+"/"+board);
+        const boardFolder = directory[folder];
+        let boardInfo = boardFolder[board];
+        boardInfo.folder = folder;
+        boardInfo.name = board;
+        doEditor(boardInfo, dirKeys);
+        navigate('/boardbrush/edit');
     }
 
 
@@ -94,15 +127,13 @@ function Load({loggedUser, doEditor, signoutCB, database}) {
             <div className="load-folders">
                 <div className="load-folder-header">
                     <span className="load-recent-text">Folders</span>
-                    {/* <button className="load-recent-button">
-                        <span className="load-new-text">Add Folder</span> 
-                    </button> */}
                 </div>
                 <div className="load-folder-section">
                     {
                         renderFolders()
                     }
                 </div>
+                {renderFolderPopup()}
                     
             </div>
             <div className="load-footer">

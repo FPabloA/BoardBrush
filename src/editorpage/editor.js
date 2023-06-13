@@ -48,8 +48,20 @@ export default function Editor({board, user, folders}) {
 
     const [tokenImgList, setTokenImgList] = useState([]);
     const [currToken, setCurrToken] = useState("");
-    const [numRows, setNumRows] = useState(8);
-    const [numCols, setNumCols] = useState(8);
+    const [numRows, setNumRows] = useState(() =>{
+        if(board)
+            return board.numRows
+        else
+            return 8
+    });
+    const [numCols, setNumCols] = useState(() =>{
+        if(board){
+            return board.numCols
+        }
+            
+        else
+            return 8
+    });
     const [rulesList, setRulesList] = useState([]);
     //stores ruleslist in session so it persists w/ refreshes
     useEffect(() =>{
@@ -137,7 +149,21 @@ export default function Editor({board, user, folders}) {
         </>)
     }
     const renderBoard = () =>{
-        if(numRows * numCols === boardGrid.length){
+        if(boardGrid.length === 0 && board){
+            let spaces = [];
+            const loadedColors = JSON.parse(board.board);
+            for(let i = 0; i < numRows; i++){
+                for(let j = 0; j < numCols; j++){
+                    const spaceColor = loadedColors[(i * numCols) + j]
+                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
+                    row={i} col={j} color={spaceColor} undoCB={addUndo} tokenDragCB={handleEditorTokenDragStart}
+                    tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>);
+                }
+            }
+            setBoardGrid([...spaces]);
+            return spaces;
+        }
+        else if(numRows * numCols === boardGrid.length){
             return boardGrid;
         }
         else{
@@ -151,7 +177,6 @@ export default function Editor({board, user, folders}) {
             }
             setBoardGrid([...spaces]);
             return spaces;
-            
         }
         
     }
@@ -333,7 +358,10 @@ export default function Editor({board, user, folders}) {
     }
     const renderSavePop = () =>{
         if(showSavePop)
-            return <SavePopup closeCB={toggleSavePop} saveCB={doSave} folders={folders}/>
+            if(board)
+                return <SavePopup currFolder={board.folder} currName={board.name} closeCB={toggleSavePop} saveCB={doSave} folders={folders}/>
+            else
+                return <SavePopup currFolder={null} currName={null} closeCB={toggleSavePop} saveCB={doSave} folders={folders}/>
     }
     const makeColorJSON = () =>{
         const temp = [...boardRef.current];
@@ -346,7 +374,6 @@ export default function Editor({board, user, folders}) {
             return boardColors;
     }
     const doSave = (folder, boardName) =>{
-        // check if folder already
         const path = 'users/' + user.uid + folder + boardName + '/'
         toggleSavePop();
         //need to enter something
@@ -354,12 +381,12 @@ export default function Editor({board, user, folders}) {
             return;
         }
         const boardJSON = JSON.stringify(makeColorJSON());
-        //console.log(boardJSON);
-        // set(ref(db, 'users/' + user.uid +"/"+ folder +"/"+ boardName), {
-        //     numRows: numRows,
-        //     numCols: numCols,
-        //     board: boardJSON
-        // }); 
+        console.log(boardJSON);
+        set(ref(db, 'users/' + user.uid +"/"+ folder +"/"+ boardName), {
+            numRows: numRows,
+            numCols: numCols,
+            board: boardJSON
+        }); 
     }
 
     const handleRowChange = (e) =>{
@@ -397,9 +424,9 @@ export default function Editor({board, user, folders}) {
             row={row} col={col} color={color} img={img} 
             undoCB={addUndo} token={tokenRef.current} tokenDragCB={handleEditorTokenDragStart}
             tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>;
-        setBoardGrid([...temp]);
         setCurrToken("");
     }
+
 
     return(<>
         <>

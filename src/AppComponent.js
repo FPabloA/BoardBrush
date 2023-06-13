@@ -10,6 +10,7 @@ import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { ref, child, get, getDatabase } from "firebase/database";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
 import Editor from './editorpage/editor';
 // Your web app's Firebase configuration
@@ -29,7 +30,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth();
-const db = getFirestore(app);
+
 
 function AppComponent() {
     const navigate = useNavigate();
@@ -95,7 +96,7 @@ function AppComponent() {
     const renderLogin = () =>{
         if(user){
             return(<>
-                <Load loggedUser={user} doEditor={setEditorVars} signoutCB={signoutCallback} database={db}/>
+                <Load loggedUser={user} doEditor={setEditorVars} signoutCB={signoutCallback}/>
             </>)
         }
         else{
@@ -108,12 +109,12 @@ function AppComponent() {
     const loadEditor = () =>{
       if(gameBoard){
         return(<>
-          <Editor board={gameBoard} user={user} database={db} folders={dirKeys}/>
+          <Editor board={gameBoard} user={user} folders={dirKeys}/>
         </>)
       }
       else{
         return(<>
-          <Editor board={null} user={user} database={db} folders={dirKeys}/>
+          <Editor board={null} user={user} folders={dirKeys}/>
         </>)
       }
     }

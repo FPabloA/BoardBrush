@@ -1,9 +1,19 @@
 import "./savepopup.css"
 import { useState } from "react";
 
-export default function SavePopup ({closeCB, saveCB, folders}){
-    const [folderName, setFolderName] = useState("");
-    const [boardName, setBoardName] = useState("");
+export default function SavePopup ({currFolder, currName, closeCB, saveCB, folders}){
+    const [folderName, setFolderName] = useState(() =>{
+        if(currFolder){
+            return currFolder
+        }
+        return "";
+    });
+    const [boardName, setBoardName] = useState(() =>{
+        if(currName){
+            return currName
+        }
+        return "";
+    });
     const [showFolders, setShowFolders] = useState(false);
 
     const handleFolderChange = (e) =>{
