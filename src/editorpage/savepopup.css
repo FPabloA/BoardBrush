@@ -103,10 +103,12 @@ li{
     display: flex;
 }
 .dropdown{
+    max-height: 17vh;
     position: absolute;
     width: 20.35vw;
     background-color: #f1f1f1;
-    bottom: -1vh;
+    overflow-y: auto;
+    top: 5vh;
 }
 
 .folder-button{

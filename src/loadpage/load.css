@@ -101,7 +101,7 @@ button{
     border-top: 0;
     border-left: 0;
     border-right: 0;
-    height: 45vh;
+    height: 93vh;
     width: 100%;
 }
 
@@ -116,6 +116,7 @@ button{
 .load-folder-section{
     margin: 2vw;
     /* border: 1px solid black; */
+    padding: 1vw;
     overflow-y: auto;
 }
 
@@ -126,9 +127,11 @@ button{
     border-color: black;
     border-radius: 15px;
     height: auto;
-    width: auto;
-    font-size: 1.75vw;
-    margin-right: 1vw;
+    width: 12vw;
+    font-size: 2vw;
+    margin-left: 3vw;
+    margin-right: 3vw;
+    margin-bottom: 7vh;
 }
 
 .load-footer{

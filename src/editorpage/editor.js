@@ -72,6 +72,11 @@ export default function Editor({board, user, folders}) {
     const [undoQueue, setUndoQueue] = useState([]);
     const [redoQueue, setRedoQueue] = useState([]);
 
+    const [hideActive, setHideActive] = useState(false);
+    const [activeTool, setActiveTool] = useState("paint");
+
+    const [bucketPoints, setBucketPoints] = useState([]);
+
     const boardRef = useRef();
     boardRef.current = boardGrid;
     const colorRef = useRef();
@@ -82,11 +87,14 @@ export default function Editor({board, user, folders}) {
     undoRef.current = undoQueue;
     const tokenRef = useRef();
     tokenRef.current = currToken;
+    const toolRef = useRef();
+    toolRef.current = activeTool;
+    const bucketPointRef = useRef();
+    bucketPointRef.current = bucketPoints;
 
     
 
     const addUndo = () =>{
-        console.log("callling undo");
         const list = [...undoRef.current];
         if(undoRef.current.length >= 10){
             list.shift()
@@ -97,12 +105,10 @@ export default function Editor({board, user, folders}) {
     const onUndo = () =>{
         if(undoRef.current.length > 0){
             addRedo()
-            console.log(undoRef.current)
             const list = [...undoRef.current];
             const newBoard = list.pop();
             setBoardGrid([...newBoard]);
             setUndoQueue([...list]);
-            console.log(undoRef.current);
         }
     }
     const addRedo = () =>{
@@ -129,18 +135,49 @@ export default function Editor({board, user, folders}) {
         addUndo();
         const index = (row * numCols) + col;
         const temp = [...boardRef.current]
-        temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}
+        temp[index] = <BoardSpace key={index} doColorCB={handleSpaceClick}
             row={row} col={col} color={colorRef.current} img={tileImgRef.current} 
             undoCB={addUndo} token={tokenImg} tokenDragCB={handleEditorTokenDragStart}
             tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>;
         setBoardGrid([...temp]);
-        
+    }
+    const bucketColorSpaces = (row, col) =>{
+        addUndo();
+        let startRow = Math.min(row, bucketPointRef.current[0]);
+        let startCol = Math.min(col, bucketPointRef.current[1]);
+        let endRow = Math.max(row, bucketPointRef.current[0]);
+        let endCol = Math.max(col, bucketPointRef.current[1]);
+
+        const temp = [...boardRef.current];
+        for(let i = startRow; i <= endRow; i++){
+            for(let j = startCol; j <=endCol; j++){
+                const ind = (i * numCols) + j;
+                temp[ind] = <BoardSpace key={ind} doColorCB={handleSpaceClick}
+                    row={i} col={j} color={colorRef.current} img={tileImgRef.current} 
+                    undoCB={addUndo} token={temp[ind].props.token} tokenDragCB={handleEditorTokenDragStart}
+                    tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>;
+            }
+        }
+        setBoardGrid([...temp]);
+        setBucketPoints([]);
+    }
+    const handleSpaceClick = (row, col, tokenImg) =>{
+        if(toolRef.current === "paint"){
+            colorSpaces(row, col, tokenImg);
+        }
+        else{
+            if(bucketPointRef.current.length === 0)
+                setBucketPoints([row, col]);
+                else{
+                    bucketColorSpaces(row, col);
+                }
+        }
     }
 
     //board frame functions
     const doFrame = () =>{
         const frameStyle = {gridTemplateColumns: "repeat("+numCols+", 1fr)",
-                            gridTemplateRows: "repeat("+numCols+", 1fr)"};
+                            gridTemplateRows: "repeat("+numRows+", 1fr)"};
         return(<>
         <div className="editor-board-frame" style={frameStyle}>
                     {renderBoard()}
@@ -155,7 +192,7 @@ export default function Editor({board, user, folders}) {
             for(let i = 0; i < numRows; i++){
                 for(let j = 0; j < numCols; j++){
                     const spaceColor = loadedColors[(i * numCols) + j]
-                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
+                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={handleSpaceClick}
                     row={i} col={j} color={spaceColor} undoCB={addUndo} tokenDragCB={handleEditorTokenDragStart}
                     tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>);
                 }
@@ -170,7 +207,7 @@ export default function Editor({board, user, folders}) {
             let spaces = [];
             for(let i = 0; i < numRows; i++){
                 for(let j = 0; j < numCols; j++){
-                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={colorSpaces}
+                    spaces.push(<BoardSpace key={(i * numCols) + j} doColorCB={handleSpaceClick}
                     row={i} col={j} color={"#FFFFFF"} undoCB={addUndo} tokenDragCB={handleEditorTokenDragStart}
                     tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>);
                 }
@@ -181,13 +218,16 @@ export default function Editor({board, user, folders}) {
         
     }
     const makeTabs = () =>{
-        return (<>
+        if(!hideActive){
+            return (<>
             <div className="editor-tabs">
                 {tabList.map(tab =>(
                     renderTabs(tab)
                 ))}
             </div>
         </>)
+        }
+        
     }
     const renderTabs = (tab) =>{
         if(activeTab === tab){
@@ -205,8 +245,14 @@ export default function Editor({board, user, folders}) {
         navigate("/boardbrush/load");
     }
     const showActiveColor = () =>{
+        let hideButton;
+        if(hideActive)
+            hideButton = <button className="editor-hide-button" onClick={toggleHideTabs}>hidden</button>
+        else
+            hideButton = <button className="editor-hide-button" onClick={toggleHideTabs}>hide</button>
         return(<>
         <div className="editor-color-display">
+            {hideButton}
             <span className="editor-color-text">Active Color:</span>
             <div className="editor-active-color"
             style={{backgroundColor: currColor}}>
@@ -215,6 +261,10 @@ export default function Editor({board, user, folders}) {
         </div>
         
         </>);
+    }
+
+    const toggleHideTabs = () =>{
+        setHideActive(!hideActive);
     }
 
     const renderTabContent = () =>{
@@ -265,7 +315,6 @@ export default function Editor({board, user, folders}) {
 
     //img tile button functions
     const tileImg = (img) =>{
-        console.log("in tile img")
         const imgURL = URL.createObjectURL(img);
         let temp = [...tileImgList];
         if(temp.length > 5){
@@ -378,10 +427,10 @@ export default function Editor({board, user, folders}) {
         toggleSavePop();
         //need to enter something
         if(folder === "" || boardName === ""){
+            window.alert("Make sure both fields are filled before trying to save")
             return;
         }
         const boardJSON = JSON.stringify(makeColorJSON());
-        console.log(boardJSON);
         set(ref(db, 'users/' + user.uid +"/"+ folder +"/"+ boardName), {
             numRows: numRows,
             numCols: numCols,
@@ -409,7 +458,7 @@ export default function Editor({board, user, folders}) {
     const clearOldSpace = (row, col, color, img) =>{
         const index = (row * numCols) + col;
         const temp = [...boardRef.current]
-        temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}
+        temp[index] = <BoardSpace key={index} doColorCB={handleSpaceClick}
             row={row} col={col} color={color} img={img} 
             undoCB={addUndo} token={""} tokenDragCB={handleEditorTokenDragStart}
             tokenDropCB={handleTokenDrop}/>;
@@ -417,15 +466,20 @@ export default function Editor({board, user, folders}) {
     }
     const handleTokenDrop = (row, col, color, img) =>{
         addUndo();
-        //console.log("handling drop");
         const index = (row * numCols) + col;
         const temp = [...boardRef.current]
-        temp[index] = <BoardSpace key={index} doColorCB={colorSpaces}
+        temp[index] = <BoardSpace key={index} doColorCB={handleSpaceClick}
             row={row} col={col} color={color} img={img} 
             undoCB={addUndo} token={tokenRef.current} tokenDragCB={handleEditorTokenDragStart}
             tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>;
         setCurrToken("");
     }
+
+    const setTool = (e) =>{
+        setActiveTool(e.target.value)
+        //console.log(activeTool)
+    }
+
 
 
     return(<>
@@ -433,10 +487,14 @@ export default function Editor({board, user, folders}) {
         <div className="editor-container">
             
             <div className="editor-tool-bar">
-                <button className="editor-icon-button" onClick={toggleSavePop}>save</button>
+                <button className="editor-icon-button" onClick={toggleSavePop}>Save</button>
                 <button className="editor-icon-button"
                 onClick={goToLoad}
-                >load?</button>
+                >Load</button>
+
+                <button className="editor-icon-button" value="paint" onClick={setTool}>Paint</button>
+                <button className="editor-icon-button" value="bucket" onClick={setTool}>Bucket</button>
+
                 <button className="editor-func-button" onClick={toggleRulePop}>Rules</button>
                 <button className="editor-func-button" onClick={toggleHelpPop}>help</button>
                 {showActiveColor()}

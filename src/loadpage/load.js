@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { ref, child, get, getDatabase } from "firebase/database";
+import { ref, child, get, getDatabase, remove } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import FolderPopup from "./folderpopup";
 import "./load.css";
@@ -44,7 +44,8 @@ function Load({loggedUser, doEditor, signoutCB}) {
         if(directory)
             return;
         setDirectory(promise);
-        setDirKeys(Object.keys(promise));
+        if(promise)
+            setDirKeys(Object.keys(promise));
     }
 
     const parseUser = () => {
@@ -94,7 +95,7 @@ function Load({loggedUser, doEditor, signoutCB}) {
         //do the delete
         console.log("deleting " + path);
         toggleFolderPopup();
-        setDirectory(null); 
+        remove(ref(db, 'users/'+loggedUser.uid+'/'+path)).then(setDirectory(null))
     }
     const handleLoad = (folder, board) =>{
         toggleFolderPopup();
@@ -116,17 +117,18 @@ function Load({loggedUser, doEditor, signoutCB}) {
             <span className="load-header-text">Load Boards</span>
             <span className="load-header-name">{parseUser()}</span>
         </div>
-            <div className="load-recent">
+            {/* <div className="load-recent">
                 <div className="load-recent-header">
                     <span className="load-recent-text">Recent Boards</span>
-                    <button className="load-recent-button" onClick={handleNewBoard}>
-                        <span className="load-new-text">New Board</span>    
-                    </button>
+                    
                 </div>
-            </div>
+            </div> */}
             <div className="load-folders">
                 <div className="load-folder-header">
                     <span className="load-recent-text">Folders</span>
+                    <button className="load-recent-button" onClick={handleNewBoard}>
+                        <span className="load-new-text">New Board</span>    
+                    </button>
                 </div>
                 <div className="load-folder-section">
                     {
