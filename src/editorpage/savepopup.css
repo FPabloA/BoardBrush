@@ -45,7 +45,7 @@ li{
     z-index: 1;
 }
 
-.popup-close-button{
+/* .popup-close-button{
     position: absolute;
     height: 40px;
     width: 40px;
@@ -55,7 +55,7 @@ li{
     border: 0;
     background-color: white;
     border-radius: 50%;
-}
+} */
 
 .popup-title-text{
     margin-top: 10%;

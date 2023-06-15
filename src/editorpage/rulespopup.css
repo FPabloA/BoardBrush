@@ -42,7 +42,7 @@ button{
     overflow-y:auto
 }
 
-.popup-close-button{
+/* .popup-close-button{
     position: absolute;
     height: 3vh;
     width: 3vh;
@@ -52,7 +52,7 @@ button{
     border: 0;
     background-color: white;
     border-radius: 50%;
-}
+} */
 
 .popup-title-text{
     margin-top: 10%;
@@ -68,17 +68,24 @@ button{
 }
 
 .input-wrapper{
+    display: flex;
     margin-top: 5px;
     margin-bottom: 5px;
     width: 90%;
 }
 
 .rules-entry{
-    width: 75%;
+    width: 80%;
 }
 
 .add-button{
     margin-left: 5px;
+    border: 1px;
+    border-style: solid;
+    background-color: white;
+    height: 1.5vw;
+    width: 3.75vw;
+    
 }
 
 .rule-entry-wrapper{

@@ -31,6 +31,7 @@
     display: block;
     width: 12.5vw;
     height: 6vh;
+    line-height: 3vh;
     margin: 0 auto;
     background-color: white;
     border: 1px solid black;

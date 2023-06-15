@@ -33,8 +33,7 @@ button{
     position: relative;
     display: flex;
     align-items: center;
-    border-style: solid;
-    border-color: black;
+    border: 1px solid black;
     border-top: 0;
     border-left: 0;
     border-right: 0;
@@ -44,32 +43,14 @@ button{
 }
 
 .load-header-text{
-    margin-left: 15px;
+    margin-left: 10px;
     font-size: 2.5vw;
 }
 
 .load-header-name{
     position: absolute;
-    right: 15px;
+    right: 10px;
     font-size: 2.5vw;
-}
-
-.load-recent{
-    border-style: solid;
-    border-color: black;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    height: 48vh;
-    width: 100%;
-}
-
-.load-recent-header{
-    display: flex;
-    align-items: center;
-    position: relative;
-    height: 6vh;
-    width: 100%;
 }
 
 .load-recent-text{
@@ -82,8 +63,7 @@ button{
     align-items: center;
     position: absolute;
     background-color: white;
-    border-style: solid;
-    border-color: black;
+    border: 1px solid black;
     border-radius: 15px;
     height: 4vh;
     width: auto;
@@ -101,6 +81,7 @@ button{
     border-top: 0;
     border-left: 0;
     border-right: 0;
+    border-bottom: 0;
     height: 93vh;
     width: 100%;
 }
@@ -123,8 +104,7 @@ button{
 .load-folder{
     align-items: center;
     background-color: white;
-    border-style: solid;
-    border-color: black;
+    border: 1px solid black;
     border-radius: 15px;
     height: auto;
     width: 12vw;
@@ -138,6 +118,10 @@ button{
     display: flex;
     align-items: center;
     position: relative;
+    border: 1px solid black;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
     height: 6vh;
     width: 100%;
 }
@@ -152,8 +136,7 @@ button{
 }
 
 .load-exit-button:hover{
-    border-style: solid;
-    border-color: black;
+    border: 1px solid black;
     border-top: 0;
     border-left: 0;
     border-right: 0;

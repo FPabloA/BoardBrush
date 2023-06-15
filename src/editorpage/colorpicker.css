@@ -1,17 +1,21 @@
 .colorpck-container{
-    display: flexbox;
+    padding: 1vh;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     text-align: center;
     position: absolute;
-    height: auto;
+    height: 65vh;
     width: auto;
     background-color: #181818;
     bottom: 3vh;
+    z-index: 1;
 }
 
 .colorpck-close-button{
     position: absolute;
-    font-size: 1vw;
+    font-size: 1.5vw;
+    top: 0;
     right: 0px;
     background-color: #181818;
     color: #f3f3f3;
@@ -19,6 +23,7 @@
 }
 
 .colorpck-header{
+    font-size: 1.5vw;
     color: #f3f3f3;
 }
 
@@ -26,11 +31,31 @@
     display: flex;
     text-align: center;
     justify-content: center;
-    width: auto;
-    height: auto;
     background-color: #181818;
     color: #f3f3f3;
     border: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 1.5vw;
-    margin: 1vh auto;
+    margin: 0 auto;
+}
+
+.rcp-saturation{
+    height: 100%;
+    width: 100%;
+}
+
+.rcp-fields{
+    height: 20%;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.rcp-hue{
+    width: 100%;
+}
+
+.rcp-fields-element-input{
+    height: 20%;
+    width: auto;
+    font-size: 1vw;
 }

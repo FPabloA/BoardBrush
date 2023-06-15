@@ -29,7 +29,7 @@ function RegisterPopup({registerCallBack, toggleClose}){
     <div className="popup-bg-container">
         <div className="popup-content-box">
             <button className="popup-close-button" onClick={toggleClose}>x</button>
-            <h1 className="host-header">Host Login</h1>
+            <h1 className="host-header">Register Account</h1>
             <input className="popup-host-username"
             type="text"
             placeholder="Enter Username"

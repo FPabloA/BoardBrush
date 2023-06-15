@@ -25,12 +25,19 @@
     position: absolute;
     background-color: white;
     border: none;
-    font-size: 2vw;
-    right: 5px;
+    height: 2vw;
+    width: 2vw;
+    font-size: 1.5vw;
+    right: 0;
 }
 
 .popup-close-button:hover{
     cursor: pointer;
+}
+
+.host-header{
+    margin-top: 2vw;
+    font-size: 3vw;
 }
 
 .popup-host-username{

@@ -5,9 +5,9 @@ import JoinPopup from "./joinpopup";
 import RegisterPopup from "./registerpopup";
 
 function Login({newAcctCB, loginCB}){
-    const [showHost, setShowHost] = useState(null);
-    const [showJoin, setShowJoin] = useState(null);
-    const [showRegister, setShowRegister] = useState(null);
+    const [showHost, setShowHost] = useState(false);
+    const [showJoin, setShowJoin] = useState(false);
+    const [showRegister, setShowRegister] = useState(false);
 
     const toggleHost = () =>{
         if(showHost)
@@ -21,10 +21,8 @@ function Login({newAcctCB, loginCB}){
     }
 
     const toggleJoin = () =>{
-        if(showJoin)
-            setShowJoin(false);
-        else
-            setShowJoin(true);
+        console.log("toggle Join")
+        setShowJoin(!showJoin);
     }
     const renderJoin = () =>{
         if(showJoin)
@@ -32,13 +30,11 @@ function Login({newAcctCB, loginCB}){
     }
 
     const toggleRegister = () =>{
-        if(showRegister)
-            setShowRegister(false);
-        else
-            setShowRegister(true);
+        console.log("register")
+        setShowRegister(!showRegister);
     }
     const renderRegister = () =>{
-        if(showJoin)
+        if(showRegister)
             return <RegisterPopup registerCallBack={newAcctCB} toggleClose={toggleRegister}/>
     }
 

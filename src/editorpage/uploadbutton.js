@@ -16,7 +16,9 @@ const UploadButton = ({name, imgCB}) =>{
 
     return(
         <>
-            <button className={name} onClick={buttonClick}>upload</button>
+            <button className={name} onClick={buttonClick}>
+                <img className="editor-upload-icon" src={require("../icons/upload-icon.png")}></img>
+            </button>
             <input ref={upRef} type='file' accept=".jpg, .jpeg, .png" style={{display: 'none'}} onChange={imgChange}/>
         </>
     )

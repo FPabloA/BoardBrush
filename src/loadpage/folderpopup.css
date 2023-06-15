@@ -21,7 +21,7 @@
     width: 30vw;
 }
 
-.popup-close-button{
+/* .popup-close-button{
     position: absolute;
     background-color: white;
     border: none;
@@ -31,7 +31,7 @@
 
 .popup-close-button:hover{
     cursor: pointer;
-}
+} */
 
 .folder-boardlist-containter{
     height: 60%;

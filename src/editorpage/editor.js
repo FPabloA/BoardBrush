@@ -62,7 +62,12 @@ export default function Editor({board, user, folders}) {
         else
             return 8
     });
-    const [rulesList, setRulesList] = useState([]);
+    const [rulesList, setRulesList] = useState(() =>{
+        if(board)
+            return board.rules
+        else
+            return [];
+    });
     //stores ruleslist in session so it persists w/ refreshes
     useEffect(() =>{
         if(rulesList.length > 0){
@@ -247,9 +252,13 @@ export default function Editor({board, user, folders}) {
     const showActiveColor = () =>{
         let hideButton;
         if(hideActive)
-            hideButton = <button className="editor-hide-button" onClick={toggleHideTabs}>hidden</button>
+            hideButton = <button className="editor-hide-button" onClick={toggleHideTabs}>
+                <img className="editor-hide-icon" src={require("../icons/show-icon.png")}/>   
+            </button>
         else
-            hideButton = <button className="editor-hide-button" onClick={toggleHideTabs}>hide</button>
+            hideButton = <button className="editor-hide-button" onClick={toggleHideTabs}>
+                <img className="editor-hide-icon" src={require("../icons/hidden-icon.png")}/> 
+            </button>
         return(<>
         <div className="editor-color-display">
             {hideButton}
@@ -270,8 +279,11 @@ export default function Editor({board, user, folders}) {
     const renderTabContent = () =>{
         const undoSection = <>
         <div className="editor-undo-section">
-            <button className="editor-_do-button" onClick={onUndo}>Undo</button>
-            <button className="editor-_do-button" onClick={onRedo}>Redo</button>
+            <button className="editor-_do-button" onClick={onUndo}>
+            <img className="editor-_do-icon" src={require("../icons/undo-icon.png")}/>
+            </button>
+            <button className="editor-_do-button" onClick={onRedo}><img className="editor-_do-icon" src={require("../icons/redo-icon.png")}/>
+            </button>
         </div>
         </>;
         if(activeTab === "Tiles"){
@@ -285,11 +297,14 @@ export default function Editor({board, user, folders}) {
             return [...colorArr, addButton, ...imgArr, uploadButton, undoSection];
         }
         else if(activeTab === "Tokens"){
-            let imgArr = tokenImgList.map((img, ind) => 
+            let tokenImgArr = tokenImgList.map((img, ind) => 
             renderTokens(img, ind));
             const uploadButton = <UploadButton name="editor-token-upload" imgCB={tokenImg}/>;
-            return [...imgArr,uploadButton, undoSection];
-            
+            if(tokenImgArr.length === 0){
+                console.log("should be empty");
+                tokenImgArr.push(<img className="editor-tab-token" key={0}style={{visibility:"collapse"}}></img>);
+            }
+            return [...tokenImgArr,uploadButton, undoSection];
         }
     }
 
@@ -331,7 +346,7 @@ export default function Editor({board, user, folders}) {
     }
     const onTileImgClick = (e) =>{
         setCurrTileImg(e.target.src);
-        setCurrColor(null);
+        //setCurrColor(null);
     }
 
     //img token button functions
@@ -434,7 +449,8 @@ export default function Editor({board, user, folders}) {
         set(ref(db, 'users/' + user.uid +"/"+ folder +"/"+ boardName), {
             numRows: numRows,
             numCols: numCols,
-            board: boardJSON
+            board: boardJSON,
+            rules: rulesList
         }); 
     }
 
@@ -473,11 +489,11 @@ export default function Editor({board, user, folders}) {
             undoCB={addUndo} token={tokenRef.current} tokenDragCB={handleEditorTokenDragStart}
             tokenDropCB={handleTokenDrop} tokenDragEndCB={clearOldSpace}/>;
         setCurrToken("");
+        setBoardGrid([...temp]);
     }
 
     const setTool = (e) =>{
         setActiveTool(e.target.value)
-        //console.log(activeTool)
     }
 
 
@@ -487,16 +503,27 @@ export default function Editor({board, user, folders}) {
         <div className="editor-container">
             
             <div className="editor-tool-bar">
-                <button className="editor-icon-button" onClick={toggleSavePop}>Save</button>
+                <button className="editor-icon-button" onClick={toggleSavePop}>
+                <img className="editor-tool-icon" src={require("../icons/save-icon.png")}/>
+                </button>
                 <button className="editor-icon-button"
-                onClick={goToLoad}
-                >Load</button>
+                onClick={goToLoad}>
+                    <img className="editor-tool-icon" src={require("../icons/open-icon.png")}/>
+                </button>
 
-                <button className="editor-icon-button" value="paint" onClick={setTool}>Paint</button>
-                <button className="editor-icon-button" value="bucket" onClick={setTool}>Bucket</button>
+                <button className="editor-icon-button" value="paint" onClick={setTool}>
+                <img className="editor-tool-icon" src={require("../icons/paint-icon.png")}/>
+                </button>
+                <button className="editor-icon-button" value="bucket" onClick={setTool}>
+                <img className="editor-tool-icon" src={require("../icons/bucket-icon.png")}/>
+                </button>
 
-                <button className="editor-func-button" onClick={toggleRulePop}>Rules</button>
-                <button className="editor-func-button" onClick={toggleHelpPop}>help</button>
+                <button className="editor-func-button" onClick={toggleRulePop}>
+                    <img className="editor-func-icon" src={require("../icons/rules-icon.png")}/>
+                </button>
+                <button className="editor-func-button" onClick={toggleHelpPop}>
+                    <img className="editor-func-icon" src={require("../icons/help-icon.png")}/>
+                </button>
                 {showActiveColor()}
             </div>
             <div className="editor-right-side">

@@ -22,7 +22,7 @@ button{
 }
 
 .editor-tool-bar{
-    border-style: solid;
+    border: 1px solid black;
     border-top: 0px;
     box-sizing: border-box;
     display: flex;
@@ -34,26 +34,40 @@ button{
 }
 
 .editor-icon-button{
-    display: block;
-    border-style: solid;
-    border-color: black;
+    display: flex;
+    border: 1px solid black;
     background-color: white;
+    align-items: center;
+    justify-content: center;
     height: 2.5vw;
     width: 2.5vw;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
+.editor-tool-icon{
+    width: 2vw;
+    height: 2vw;
+}
+
 .editor-func-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 10px;
     height: 5vh;
     width: 5vh;
     border-radius: 50%;
     background-color: white;
     box-sizing: border-box;
-    border: 2px black solid;
+    border: 1px solid black;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.editor-func-icon{
+    height: 3.75vh;
+    width: 3.75vh;
 }
 
 .editor-help-button:active{
@@ -96,17 +110,17 @@ button{
 }
 
 .editor-active-img{
-    object-fit: fill;
-    object-position: center;
+    position: relative;
     height: 100%;
     width: 100%;
+    margin: 0 auto;
 }
 
 .editor-header-bar{
     display: inline-flex;
     flex-direction: row;
     width: 100%;
-    border-style: solid;
+    border: 1px solid black;
     border-top: 0px;
     border-left: 0px;
     box-sizing: border-box;
@@ -125,7 +139,9 @@ button{
 .editor-play-button{
     border: 1px;
     border-style: solid;
+    background-color: white;
     height: 2.5vw;
+    width: 8vw;
     margin-left: 7vw;
     margin-right: 6vw;
 }
@@ -136,28 +152,24 @@ button{
     font-size: 1.5vw;
     vertical-align: top;
     line-height: 1.75vw;
-    padding: 5px;
-    margin-right: 5px;
 }
 
 
 
 .editor-grid-text{
     position: relative;
-    top: 10px;
     font-family: "Titillium Web", sans-serif;
     font-weight: bold;
-    font-size: 1.25vw;
+    font-size: 1.5vw;
     margin-left: 5px;
 }
 
 .editor-size-input{
     position: relative;
-    top: 10px;
     margin-left: 5px;
     width: 1.25vw;
     height: 3.25vh;
-    font-size: 1.25vw;
+    font-size: 1.5vw;
     text-align: center;
 }
 
@@ -178,12 +190,12 @@ button{
 .editor-board-frame{
     display: grid;
     position: relative;
-    border: 1px;
     height: 80vh;
     column-gap: 0px;
     row-gap: 0px;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
+    border: 0px solid black;
 }
 
 
@@ -193,7 +205,7 @@ button{
     vertical-align: center;
     align-items: center;
     position: relative;
-    border: solid 1px;
+    border: 1px solid black;
     overflow: hidden;
 }
 
@@ -201,7 +213,7 @@ button{
     vertical-align: center;
     justify-content: center;
     position: absolute;
-    bottom: -0.2vh;
+    bottom: 0;
     border: 1px;
     box-sizing: border-box;
     height: 6.5vh;
@@ -211,31 +223,29 @@ button{
 
 .editor-tab{
     height: 100%;
-    width: 9vw;
-    border-style: solid;
-    border-color: black;
+    width: 6vw;
+    border: 1px solid black;
     border-left: 0px;
     background-color: white;
     font-family: "Titillium Web", sans-serif;
-    font-size: 35px;
+    font-size: 1vw;
 }
 
 .editor-tab-active{
     height: 100%;
     width: 9vw;
-    border-style: solid;
-    border-color: black;
+    border: 1px solid black;
     border-left: 0px;
     border-bottom: 0px;
     background-color: white;
     font-family: "Titillium Web", sans-serif;
     font-weight: bold;
-    font-size: 35px;
+    font-size: 1vw;
 }
 
 .editor-tab-content{
     display: flex;
-    border: solid 2px black;
+    border: solid 1px black;
     align-items: center;
     border-left: 0px;
     box-sizing: border-box;
@@ -243,15 +253,22 @@ button{
 }
 
 .editor-hide-button{
-    display: block;
-    margin: 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
     height: 5vh;
     width: 5vh;
     border-radius: 50%;
     background-color: white;
     box-sizing: border-box;
-    border: 2px black solid;
+    border: 1px black solid;
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.editor-hide-icon{
+    height: 3vh;
+    width: 3vh;
 }
 
 .editor-color-button{
@@ -292,15 +309,19 @@ button{
 
 .editor-tile-upload{
     display: flex;
-    text-align: center;
     justify-content: center;
-    vertical-align: center;
+    align-items: center;
     width: 6vh;
     height: 6vh;
     background-color: white;
     border: 1px solid black;
     font-size: .75vw;
     margin-left: 2vw;
+}
+
+.editor-upload-icon{
+    height: 4vh;
+    width: 4vh;
 }
 
 .editor-tab-token{
@@ -317,6 +338,9 @@ button{
 }
 
 .editor-token-upload{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 6vh;
     width: 6vh;
     height: 6vh;
@@ -358,7 +382,6 @@ button{
 
 .editor-_do-button{
     display: flex;
-    text-align: center;
     justify-content: center;
     vertical-align: center;
     width: 4.5vh;
@@ -367,4 +390,9 @@ button{
     border: 1px solid black;
     font-size: .75vw;
     margin-left: 1.25vw;
+}
+
+.editor-_do-icon{
+    height: 3.5vh;
+    width: 3.5vh;
 }

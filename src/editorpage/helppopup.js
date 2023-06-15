@@ -11,21 +11,25 @@ export default function HelpPopup ({closeCB}){
                 
                 <div className="help-wrapper">
                     <li className="popup-help-text">
-                        
-                        Grab Tool - Allows you to grab tokens without accidentally painting spaces
+                        <img className="help-icon" src={require("../icons/save-icon.png")}></img>
+                        Save Button - Saves the color, dimensions and rules associated with the current board
                     </li>
                     <li className="popup-help-text">
-
+                    <img className="help-icon" src={require("../icons/paint-icon.png")}></img>
                         Paint Tool - Select a color/image from the tile bar and click on a space to paint it
                     </li>
                     <li className="popup-help-text">
-                    
+                    <img className="help-icon" src={require("../icons/bucket-icon.png")}></img>
                         Paint Tool - Select a color/image from the tile bar and click on any two spaces to paint everything
                         in between
                     </li>
                     <li className="popup-help-text">
-
-                        Eraser Tool - Click any space to revert it back to being white
+                    <img className="help-icon" src={require("../icons/rules-icon.png")}></img>
+                        Rules Button - Add and manage the rules you want to be associated with the current board
+                    </li>
+                    <li className="popup-help-text">
+                    <img className="help-icon" src={require("../icons/hidden-icon.png")}></img>
+                        Hide Button - Toggle whether or not Tile/Token tabs are shown
                     </li>
                 </div>
             </div>

@@ -13,11 +13,12 @@ function ColorPopup({colorCB, closeCB}){
       <div className="colorpck-container">
         <button className="colorpck-close-button" onClick={closeCB}>x</button>
           <h1 className="colorpck-header">Choose a Color to Add!</h1>
-          <ColorPicker width={456} height={228} 
-                     color={color} 
-                     onChange={setColor} hideHSV dark />
-         <button className="colorpck-add-button" onClick={handleAddColor}
-         >Add</button>
+          <ColorPicker width={456} height={228} inline={true}
+                   color={color} 
+                   onChange={setColor} hideHSV dark />
+          <button className="colorpck-add-button" onClick={handleAddColor}>
+            Add
+          </button>
       </div>
     )
 }
